@@ -33,6 +33,7 @@
 
     html, body {
       width: 100%; height: 100%;
+      max-width: 100vw; max-height: 100vh;
       font-family: var(--font);
       background: var(--bg);
       color: var(--text);
@@ -59,6 +60,8 @@
       gap: var(--page-pad);
       padding: var(--page-pad);
       height: 100vh;
+      max-height: 100vh;
+      overflow: hidden;
     }
 
     /* ── Columns ── */
@@ -67,6 +70,8 @@
       flex-direction: column;
       gap: 16px;
       min-height: 0;
+      max-height: calc(100vh - (var(--page-pad) * 2));
+      overflow: hidden;
     }
 
     /* ── Card ── */
@@ -405,7 +410,7 @@
 
 <script>
 const CLIENT_ID = '228569317020-k21ano70j6psekmih6h6bt44thibuf9t.apps.googleusercontent.com';
-const SCOPES    = 'https://www.googleapis.com/auth/tasks.readonly';
+const SCOPES    = 'https://www.googleapis.com/auth/tasks';
 const TASKS_API = 'https://tasks.googleapis.com/tasks/v1';
 
 // tokens stored per account key
@@ -538,6 +543,30 @@ async function fetchTasks(who) {
   }
 }
 
+/* ── Complete a task ── */
+async function completeTask(who, listId, taskId, currentlyDone) {
+  const token = state[who].token;
+  if (!token) return;
+
+  const newStatus = currentlyDone ? 'needsAction' : 'completed';
+
+  try {
+    const res = await fetch(`${TASKS_API}/lists/${listId}/tasks/${taskId}`, {
+      method: 'PATCH',
+      headers: {
+        Authorization: 'Bearer ' + token.access_token,
+        'Content-Type': 'application/json'
+      },
+      body: JSON.stringify({ status: newStatus, completed: newStatus === 'completed' ? new Date().toISOString() : null })
+    });
+    if (!res.ok) throw new Error('patch failed ' + res.status);
+    // refresh after short delay so API catches up
+    setTimeout(() => fetchTasks(who), 600);
+  } catch(e) {
+    console.error('completeTask error', e);
+  }
+}
+
 /* ── Render tasks ── */
 function renderTasks(who, allLists) {
   const container = document.getElementById('tasks-' + who);
@@ -593,8 +622,8 @@ function renderTasks(who, allLists) {
       const titleClass = `task-title${done ? ' done' : ''}`;
 
       html += `
-        <div class="task-item">
-          <div class="${checkClass}"></div>
+        <div class="task-item" data-list="${escHtml(list.id)}" data-task="${escHtml(task.id)}" data-done="${done}" data-who="${who}">
+          <div class="${checkClass}" onclick="handleCheck(this)"></div>
           <div class="task-info">
             <div class="${titleClass}">${escHtml(title)}</div>
             ${dueHtml || task.notes ? `
@@ -620,6 +649,25 @@ function escHtml(s) {
   return String(s)
     .replace(/&/g,'&amp;').replace(/</g,'&lt;')
     .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+function handleCheck(el) {
+  const item   = el.closest('.task-item');
+  const who    = item.dataset.who;
+  const listId = item.dataset.list;
+  const taskId = item.dataset.task;
+  const done   = item.dataset.done === 'true';
+
+  // optimistic UI
+  if (!done) {
+    el.classList.add('done');
+    item.querySelector('.task-title').classList.add('done');
+  } else {
+    el.classList.remove('done');
+    item.querySelector('.task-title').classList.remove('done');
+  }
+
+  completeTask(who, listId, taskId, done);
 }
 
 /* ── Auto-refresh every 3 minutes ── */
@@ -673,7 +721,7 @@ window.addEventListener('load', () => {
 
   updateClock();
   setInterval(updateClock, 1000);
-  setInterval(refreshAll, 3 * 60 * 1000);
+  setInterval(refreshAll, 30 * 1000);
 });
 </script>
 
