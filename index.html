@@ -6,727 +6,496 @@
   <title>Our Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      --bg:        #f5f3ef;
-      --surface:   #ffffff;
-      --border:    #e4e0d8;
-      --text:      #1a1916;
-      --muted:     #8a8680;
-      --accent:    #2d5a3d;
-      --accent-lt: #eaf2ec;
-      --her:       #7c4b8a;
-      --her-lt:    #f3ecf6;
-      --radius:    14px;
-      --shadow:    0 2px 12px rgba(0,0,0,.06);
-      --font-body: 'DM Sans', sans-serif;
-      --font-disp: 'DM Serif Display', serif;
+      --bg:         #0a0a0a;
+      --surface:    #111111;
+      --surface-2:  #181818;
+      --border:     #242424;
+      --border-lt:  #2e2e2e;
+
+      --text:       #f0ebe3;
+      --muted:      #7a7570;
+
+      --pink-hi:    #f472b6;
+      --pink-mid:   #c0607e;
+      --pink-dim:   #7b3050;
+
+      --offwhite:   #f0ebe3;
+      --offwhite-2: #c9c3bb;
+
+      --radius:     16px;
+      --font-body:  'DM Sans', sans-serif;
+      --font-disp:  'Cormorant Garamond', serif;
     }
 
-    body {
+    html, body {
+      height: 100%;
       font-family: var(--font-body);
       background: var(--bg);
       color: var(--text);
-      min-height: 100vh;
-      padding: 0;
+    }
+
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
+      opacity: .025;
+      pointer-events: none;
+      z-index: 0;
     }
 
     /* ── Header ── */
     header {
-      background: var(--surface);
-      border-bottom: 1px solid var(--border);
-      padding: 18px 32px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
       position: sticky;
       top: 0;
       z-index: 100;
+      background: rgba(10,10,10,.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border-bottom: 1px solid var(--border);
+      padding: 0 36px;
+      height: 64px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
     }
-    .header-title {
+
+    .logo {
+      display: flex;
+      align-items: baseline;
+      gap: 10px;
+    }
+    .logo-word {
       font-family: var(--font-disp);
-      font-size: 1.5rem;
-      letter-spacing: -.01em;
-    }
-    .header-title span { color: var(--accent); }
-    .header-date {
-      font-size: .82rem;
-      color: var(--muted);
+      font-size: 1.65rem;
       font-weight: 300;
+      letter-spacing: .02em;
+      color: var(--offwhite);
+    }
+    .logo-amp {
+      font-family: var(--font-disp);
+      font-size: 1.65rem;
+      font-style: italic;
+      color: var(--pink-hi);
+    }
+    .logo-dot {
+      width: 6px; height: 6px;
+      border-radius: 50%;
+      background: var(--pink-hi);
+      box-shadow: 0 0 10px var(--pink-hi);
+      align-self: center;
+      margin-left: 1px;
     }
 
-    /* ── Layout ── */
-    .page { max-width: 1320px; margin: 0 auto; padding: 28px 24px 60px; }
-
-    .grid {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      grid-template-rows: auto;
-      gap: 20px;
+    .header-right {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+    }
+    .header-date {
+      font-size: .78rem;
+      font-weight: 300;
+      color: var(--muted);
+      letter-spacing: .03em;
     }
 
-    /* Calendar row spans full width */
+    /* ── Page ── */
+    .page {
+      position: relative;
+      z-index: 1;
+      max-width: 1400px;
+      margin: 0 auto;
+      padding: 32px 28px 72px;
+    }
+
     .calendars-row {
-      grid-column: 1 / -1;
       display: grid;
       grid-template-columns: 1fr 1fr;
-      gap: 20px;
+      gap: 22px;
     }
 
-    /* Widgets row */
-    .widgets-row {
-      grid-column: 1 / -1;
-      display: grid;
-      grid-template-columns: repeat(4, 1fr);
-      gap: 20px;
-    }
-
-    /* ── Card base ── */
+    /* ── Card ── */
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
-      box-shadow: var(--shadow);
       overflow: hidden;
+      display: flex;
+      flex-direction: column;
+      transition: border-color .3s;
     }
+
     .card-header {
       display: flex;
       align-items: center;
-      gap: 10px;
-      padding: 16px 20px 14px;
+      gap: 12px;
+      padding: 18px 22px 16px;
       border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
     }
-    .card-header h2 {
+
+    .card-title {
       font-family: var(--font-disp);
-      font-size: 1.05rem;
-      font-weight: 400;
+      font-size: 1.3rem;
+      font-weight: 300;
+      letter-spacing: .02em;
+      color: var(--offwhite);
       flex: 1;
     }
-    .card-body { padding: 18px 20px; }
 
-    /* owner badge */
-    .badge {
-      font-size: .7rem;
+    .pill {
+      font-size: .67rem;
       font-weight: 500;
-      letter-spacing: .04em;
+      letter-spacing: .08em;
       text-transform: uppercase;
-      padding: 3px 9px;
+      padding: 4px 11px;
       border-radius: 20px;
+      border: 1px solid;
     }
-    .badge-him  { background: var(--accent-lt); color: var(--accent); }
-    .badge-her  { background: var(--her-lt);    color: var(--her); }
-    .badge-both { background: #f0f0ee;           color: var(--muted); }
+    .pill-him {
+      color: var(--offwhite-2);
+      border-color: #333;
+      background: #1a1a1a;
+    }
+    .pill-her {
+      color: var(--pink-hi);
+      border-color: var(--pink-dim);
+      background: rgba(123,48,80,.2);
+    }
+
+    .edit-btn {
+      background: transparent;
+      border: 1px solid var(--border-lt);
+      border-radius: 8px;
+      color: var(--muted);
+      font-family: var(--font-body);
+      font-size: .73rem;
+      padding: 5px 12px;
+      cursor: pointer;
+      transition: color .15s, border-color .15s;
+    }
+    .edit-btn:hover {
+      color: var(--pink-hi);
+      border-color: var(--pink-dim);
+    }
 
     /* ── Calendar iframe ── */
     .cal-wrap {
+      flex: 1;
+      min-height: 540px;
       position: relative;
-      height: 480px;
     }
     .cal-wrap iframe {
-      width: 100%;
-      height: 100%;
+      position: absolute; inset: 0;
+      width: 100%; height: 100%;
       border: none;
       display: block;
+      filter: invert(1) hue-rotate(180deg) brightness(.88) saturate(1.15) contrast(1.05);
     }
+
+    /* placeholder */
     .cal-placeholder {
+      position: absolute; inset: 0;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      height: 100%;
-      gap: 14px;
-      color: var(--muted);
+      gap: 20px;
+      padding: 40px;
       text-align: center;
-      padding: 24px;
     }
-    .cal-placeholder .icon { font-size: 2.4rem; opacity: .5; }
-    .cal-placeholder p { font-size: .88rem; line-height: 1.6; }
-    .cal-placeholder code {
-      display: block;
-      margin-top: 10px;
-      font-size: .78rem;
-      background: var(--bg);
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 14px;
-      color: var(--text);
-      word-break: break-all;
-      text-align: left;
+    .ph-icon { font-size: 2.6rem; opacity: .2; }
+    .ph-title {
+      font-family: var(--font-disp);
+      font-size: 1.15rem;
+      font-weight: 300;
+      color: var(--offwhite-2);
     }
-    .cal-placeholder .btn {
-      margin-top: 4px;
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 9px 18px;
-      font-size: .84rem;
-      font-family: var(--font-body);
-      cursor: pointer;
-      transition: opacity .15s;
-    }
-    .cal-placeholder .btn:hover { opacity: .85; }
-
-    /* ── Weather widget ── */
-    .weather-body { text-align: center; padding: 24px 20px; }
-    .weather-temp { font-family: var(--font-disp); font-size: 3rem; line-height: 1; }
-    .weather-desc { font-size: .85rem; color: var(--muted); margin-top: 4px; }
-    .weather-location { font-size: .75rem; color: var(--muted); margin-top: 2px; }
-    .weather-icon { font-size: 2.2rem; margin-bottom: 4px; }
-    .weather-loading { color: var(--muted); font-size: .85rem; text-align: center; padding: 24px; }
-    .weather-row { display: flex; justify-content: center; gap: 24px; margin-top: 16px; }
-    .weather-stat { font-size: .78rem; color: var(--muted); text-align: center; }
-    .weather-stat strong { display: block; font-size: .95rem; color: var(--text); font-weight: 500; }
-
-    /* ── Todo widget ── */
-    .todo-input-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-    .todo-input-row input {
-      flex: 1;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 8px 12px;
-      font-family: var(--font-body);
-      font-size: .85rem;
-      background: var(--bg);
-      color: var(--text);
-      outline: none;
-      transition: border-color .15s;
-    }
-    .todo-input-row input:focus { border-color: var(--accent); }
-    .todo-input-row button {
-      background: var(--accent);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 8px 14px;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: opacity .15s;
-    }
-    .todo-input-row button:hover { opacity: .85; }
-    .todo-list { list-style: none; display: flex; flex-direction: column; gap: 6px; max-height: 200px; overflow-y: auto; }
-    .todo-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 7px 10px;
-      border-radius: 8px;
-      font-size: .85rem;
-      background: var(--bg);
-      border: 1px solid transparent;
-      transition: border-color .15s;
-    }
-    .todo-item:hover { border-color: var(--border); }
-    .todo-item input[type=checkbox] { accent-color: var(--accent); width: 15px; height: 15px; flex-shrink: 0; cursor: pointer; }
-    .todo-item label { flex: 1; cursor: pointer; }
-    .todo-item.done label { text-decoration: line-through; color: var(--muted); }
-    .todo-item .del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: .9rem; padding: 0 2px; opacity: 0; transition: opacity .15s; }
-    .todo-item:hover .del { opacity: 1; }
-    .todo-empty { font-size: .82rem; color: var(--muted); text-align: center; padding: 12px 0; }
-
-    /* ── Notes widget ── */
-    .notes-textarea {
-      width: 100%;
-      height: 160px;
-      resize: vertical;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 10px 12px;
-      font-family: var(--font-body);
-      font-size: .85rem;
-      background: var(--bg);
-      color: var(--text);
-      outline: none;
-      line-height: 1.6;
-      transition: border-color .15s;
-    }
-    .notes-textarea:focus { border-color: var(--accent); }
-    .notes-footer { font-size: .74rem; color: var(--muted); margin-top: 6px; text-align: right; }
-
-    /* ── Shopping widget ── */
-    .shop-input-row {
-      display: flex;
-      gap: 8px;
-      margin-bottom: 14px;
-    }
-    .shop-input-row input {
-      flex: 1;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 8px 12px;
-      font-family: var(--font-body);
-      font-size: .85rem;
-      background: var(--bg);
-      color: var(--text);
-      outline: none;
-      transition: border-color .15s;
-    }
-    .shop-input-row input:focus { border-color: var(--her); }
-    .shop-input-row button {
-      background: var(--her);
-      color: #fff;
-      border: none;
-      border-radius: 8px;
-      padding: 8px 14px;
-      cursor: pointer;
-      font-size: 1rem;
-      transition: opacity .15s;
-    }
-    .shop-input-row button:hover { opacity: .85; }
-    .shop-list { list-style: none; display: flex; flex-direction: column; gap: 6px; max-height: 200px; overflow-y: auto; }
-    .shop-item {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 7px 10px;
-      border-radius: 8px;
-      font-size: .85rem;
-      background: var(--bg);
-      border: 1px solid transparent;
-      transition: border-color .15s;
-    }
-    .shop-item:hover { border-color: var(--border); }
-    .shop-item input[type=checkbox] { accent-color: var(--her); width: 15px; height: 15px; flex-shrink: 0; cursor: pointer; }
-    .shop-item label { flex: 1; cursor: pointer; }
-    .shop-item.done label { text-decoration: line-through; color: var(--muted); }
-    .shop-item .del { background: none; border: none; color: var(--muted); cursor: pointer; font-size: .9rem; padding: 0 2px; opacity: 0; transition: opacity .15s; }
-    .shop-item:hover .del { opacity: 1; }
-
-    /* ── Section label ── */
-    .section-label {
-      font-size: .72rem;
-      text-transform: uppercase;
-      letter-spacing: .08em;
+    .ph-body {
+      font-size: .8rem;
       color: var(--muted);
-      font-weight: 500;
-      margin-bottom: 12px;
-      padding-bottom: 10px;
-      border-bottom: 1px solid var(--border);
+      line-height: 1.75;
+      max-width: 300px;
+    }
+    .ph-body strong { color: var(--offwhite-2); }
+    .ph-btn {
+      background: var(--pink-dim);
+      color: var(--offwhite);
+      border: none;
+      border-radius: 10px;
+      padding: 11px 24px;
+      font-family: var(--font-body);
+      font-size: .82rem;
+      cursor: pointer;
+      transition: background .2s, box-shadow .2s;
+    }
+    .ph-btn:hover {
+      background: var(--pink-mid);
+      box-shadow: 0 0 22px rgba(192,96,126,.35);
     }
 
-    /* ── Config modal ── */
-    .modal-overlay {
+    /* her card tinted */
+    .card-her {
+      border-color: #2b1820;
+      box-shadow: 0 0 50px rgba(123,48,80,.06);
+    }
+    .card-her:hover { border-color: #4a2035; }
+    .card-her .card-header {
+      background: linear-gradient(90deg, rgba(123,48,80,.14) 0%, transparent 70%);
+    }
+
+    /* him card hover */
+    .card-him:hover { border-color: #3a3530; }
+
+    /* ── Modal ── */
+    .overlay {
       display: none;
       position: fixed; inset: 0;
-      background: rgba(0,0,0,.35);
-      z-index: 200;
+      background: rgba(0,0,0,.75);
+      backdrop-filter: blur(8px);
+      z-index: 300;
       align-items: center;
       justify-content: center;
     }
-    .modal-overlay.open { display: flex; }
+    .overlay.open { display: flex; }
+
     .modal {
-      background: var(--surface);
+      background: var(--surface-2);
+      border: 1px solid var(--border-lt);
       border-radius: var(--radius);
-      box-shadow: 0 8px 40px rgba(0,0,0,.15);
-      padding: 28px;
-      width: min(480px, 94vw);
+      box-shadow: 0 28px 90px rgba(0,0,0,.6), 0 0 0 1px rgba(244,114,182,.05);
+      padding: 34px;
+      width: min(500px, 94vw);
+      animation: rise .22s ease;
     }
-    .modal h3 { font-family: var(--font-disp); font-size: 1.2rem; margin-bottom: 6px; }
-    .modal p  { font-size: .82rem; color: var(--muted); margin-bottom: 18px; line-height: 1.6; }
-    .modal label { display: block; font-size: .8rem; font-weight: 500; margin-bottom: 5px; color: var(--muted); text-transform: uppercase; letter-spacing: .05em; }
-    .modal input {
+    @keyframes rise {
+      from { opacity:0; transform:translateY(14px); }
+      to   { opacity:1; transform:translateY(0); }
+    }
+
+    .modal-title {
+      font-family: var(--font-disp);
+      font-size: 1.45rem;
+      font-weight: 300;
+      color: var(--offwhite);
+      margin-bottom: 8px;
+    }
+    .modal-sub {
+      font-size: .8rem;
+      color: var(--muted);
+      line-height: 1.75;
+      margin-bottom: 24px;
+    }
+    .modal-sub strong { color: var(--offwhite-2); }
+    .modal-sub code {
+      color: var(--pink-hi);
+      font-size: .85em;
+      background: rgba(244,114,182,.08);
+      padding: 1px 5px;
+      border-radius: 4px;
+    }
+    .modal-label {
+      display: block;
+      font-size: .7rem;
+      font-weight: 500;
+      letter-spacing: .08em;
+      text-transform: uppercase;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    .modal-input {
       width: 100%;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 9px 12px;
+      background: var(--surface);
+      border: 1px solid var(--border-lt);
+      border-radius: 9px;
+      padding: 11px 14px;
       font-family: var(--font-body);
       font-size: .88rem;
-      background: var(--bg);
       color: var(--text);
       outline: none;
-      margin-bottom: 14px;
-      transition: border-color .15s;
+      transition: border-color .15s, box-shadow .15s;
     }
-    .modal input:focus { border-color: var(--accent); }
-    .modal-btns { display: flex; gap: 10px; justify-content: flex-end; margin-top: 4px; }
+    .modal-input:focus {
+      border-color: var(--pink-mid);
+      box-shadow: 0 0 0 3px rgba(192,96,126,.15);
+    }
+    .modal-input::placeholder { color: #444; }
+
+    .modal-btns {
+      display: flex;
+      gap: 10px;
+      justify-content: flex-end;
+      margin-top: 22px;
+    }
     .modal-btns button {
       border: none;
-      border-radius: 8px;
-      padding: 9px 20px;
+      border-radius: 9px;
+      padding: 10px 22px;
       font-family: var(--font-body);
-      font-size: .85rem;
+      font-size: .84rem;
       cursor: pointer;
-      transition: opacity .15s;
+      transition: opacity .15s, background .15s, box-shadow .15s;
     }
-    .btn-cancel { background: var(--bg); color: var(--text); border: 1px solid var(--border) !important; }
-    .btn-save   { background: var(--accent); color: #fff; }
-    .btn-cancel:hover, .btn-save:hover { opacity: .85; }
-
-    /* ── Settings cog ── */
-    .settings-btn {
-      background: none;
-      border: 1px solid var(--border);
-      border-radius: 8px;
-      padding: 6px 10px;
-      cursor: pointer;
-      font-size: .9rem;
+    .btn-cancel {
+      background: transparent;
+      border: 1px solid var(--border-lt) !important;
       color: var(--muted);
-      transition: background .15s;
     }
-    .settings-btn:hover { background: var(--bg); }
+    .btn-cancel:hover { color: var(--text); }
+    .btn-save {
+      background: var(--pink-dim);
+      color: var(--offwhite);
+    }
+    .btn-save:hover {
+      background: var(--pink-mid);
+      box-shadow: 0 0 20px rgba(192,96,126,.35);
+    }
+
+    /* header setup button */
+    .hdr-btn {
+      background: transparent;
+      border: 1px solid var(--border-lt);
+      border-radius: 9px;
+      color: var(--muted);
+      font-family: var(--font-body);
+      font-size: .76rem;
+      padding: 7px 15px;
+      cursor: pointer;
+      letter-spacing: .02em;
+      transition: color .15s, border-color .15s;
+    }
+    .hdr-btn:hover {
+      color: var(--pink-hi);
+      border-color: var(--pink-dim);
+    }
 
     /* ── Responsive ── */
-    @media (max-width: 860px) {
+    @media (max-width: 820px) {
       .calendars-row { grid-template-columns: 1fr; }
-      .widgets-row   { grid-template-columns: 1fr 1fr; }
-    }
-    @media (max-width: 520px) {
-      .widgets-row   { grid-template-columns: 1fr; }
-      header { padding: 14px 16px; }
-      .page  { padding: 16px 12px 40px; }
+      header { padding: 0 18px; }
+      .page  { padding: 20px 14px 48px; }
     }
   </style>
 </head>
 <body>
 
 <header>
-  <div class="header-title">Our <span>Dashboard</span></div>
-  <div style="display:flex;align-items:center;gap:12px;">
+  <div class="logo">
+    <span class="logo-word">Marius</span>
+    <span class="logo-amp">&amp;</span>
+    <span class="logo-word">Wife</span>
+    <span class="logo-dot"></span>
+  </div>
+  <div class="header-right">
     <div class="header-date" id="header-date"></div>
-    <button class="settings-btn" onclick="openModal()">⚙ Setup</button>
+    <button class="hdr-btn" onclick="openModal()">⚙ Setup her calendar</button>
   </div>
 </header>
 
 <div class="page">
-  <div class="grid">
+  <div class="calendars-row">
 
-    <!-- ── Calendars ── -->
-    <div class="calendars-row">
+    <!-- His (hardcoded) -->
+    <div class="card card-him">
+      <div class="card-header">
+        <h2 class="card-title">Marius</h2>
+        <span class="pill pill-him">Him</span>
+      </div>
+      <div class="cal-wrap">
+        <iframe
+          src="https://calendar.google.com/calendar/embed?src=mail%40mariusdahl.dk&ctz=Europe%2FCopenhagen"
+          loading="lazy"
+        ></iframe>
+      </div>
+    </div>
 
-      <!-- His calendar -->
-      <div class="card">
-        <div class="card-header">
-          <h2>His Calendar</h2>
-          <span class="badge badge-him">Him</span>
-          <button class="settings-btn" style="font-size:.75rem;padding:4px 9px;" onclick="openModal('him')">Edit</button>
-        </div>
-        <div class="cal-wrap" id="cal-him-wrap">
-          <div class="cal-placeholder" id="cal-him-placeholder">
-            <div class="icon">📅</div>
-            <p>Paste your Google Calendar embed URL to get started.<br>Go to <strong>Google Calendar → Settings → your calendar → Integrate → Embed code</strong>, copy the <code>src</code> URL.</p>
-            <button class="btn" onclick="openModal('him')">Add Calendar URL</button>
+    <!-- Hers (configurable) -->
+    <div class="card card-her">
+      <div class="card-header">
+        <h2 class="card-title">Wife</h2>
+        <span class="pill pill-her">Her</span>
+        <button class="edit-btn" onclick="openModal()">Edit URL</button>
+      </div>
+      <div class="cal-wrap" id="cal-her-wrap">
+        <div class="cal-placeholder" id="cal-her-ph">
+          <div class="ph-icon">🗓</div>
+          <div class="ph-title">Add her calendar</div>
+          <div class="ph-body">
+            Go to <strong>Google Calendar → Settings → [Calendar] → Integrate calendar</strong>,
+            copy the URL from inside the embed <strong>src="…"</strong> and paste it here.
           </div>
+          <button class="ph-btn" onclick="openModal()">Add Calendar URL</button>
         </div>
       </div>
+    </div>
 
-      <!-- Her calendar -->
-      <div class="card">
-        <div class="card-header">
-          <h2>Her Calendar</h2>
-          <span class="badge badge-her">Her</span>
-          <button class="settings-btn" style="font-size:.75rem;padding:4px 9px;" onclick="openModal('her')">Edit</button>
-        </div>
-        <div class="cal-wrap" id="cal-her-wrap">
-          <div class="cal-placeholder" id="cal-her-placeholder">
-            <div class="icon">📅</div>
-            <p>Paste your Google Calendar embed URL to get started.<br>Go to <strong>Google Calendar → Settings → your calendar → Integrate → Embed code</strong>, copy the <code>src</code> URL.</p>
-            <button class="btn" onclick="openModal('her')">Add Calendar URL</button>
-          </div>
-        </div>
-      </div>
+  </div>
+</div>
 
-    </div><!-- /calendars-row -->
-
-    <!-- ── Widgets ── -->
-    <div class="widgets-row">
-
-      <!-- Weather -->
-      <div class="card">
-        <div class="card-header">
-          <h2>Weather</h2>
-          <span class="badge badge-both">Live</span>
-        </div>
-        <div class="card-body" id="weather-body">
-          <div class="weather-loading">Fetching weather…</div>
-        </div>
-      </div>
-
-      <!-- To-do -->
-      <div class="card">
-        <div class="card-header">
-          <h2>To-Do</h2>
-          <span class="badge badge-him">Shared</span>
-        </div>
-        <div class="card-body">
-          <div class="todo-input-row">
-            <input type="text" id="todo-input" placeholder="Add a task…" onkeydown="if(event.key==='Enter')addTodo()" />
-            <button onclick="addTodo()">＋</button>
-          </div>
-          <ul class="todo-list" id="todo-list"></ul>
-          <div class="todo-empty" id="todo-empty">No tasks yet — enjoy the peace ✌️</div>
-        </div>
-      </div>
-
-      <!-- Notes -->
-      <div class="card">
-        <div class="card-header">
-          <h2>Notes</h2>
-          <span class="badge badge-both">Shared</span>
-        </div>
-        <div class="card-body">
-          <textarea class="notes-textarea" id="notes-area" placeholder="Jot something down…" oninput="saveNotes()"></textarea>
-          <div class="notes-footer" id="notes-saved"></div>
-        </div>
-      </div>
-
-      <!-- Shopping list -->
-      <div class="card">
-        <div class="card-header">
-          <h2>Shopping</h2>
-          <span class="badge badge-her">List</span>
-        </div>
-        <div class="card-body">
-          <div class="shop-input-row">
-            <input type="text" id="shop-input" placeholder="Add item…" onkeydown="if(event.key==='Enter')addShopItem()" />
-            <button onclick="addShopItem()">＋</button>
-          </div>
-          <ul class="shop-list" id="shop-list"></ul>
-        </div>
-      </div>
-
-    </div><!-- /widgets-row -->
-
-  </div><!-- /grid -->
-</div><!-- /page -->
-
-<!-- ── Config modal ── -->
-<div class="modal-overlay" id="modal-overlay" onclick="if(event.target===this)closeModal()">
+<!-- Modal -->
+<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
   <div class="modal">
-    <h3 id="modal-title">Calendar Setup</h3>
-    <p id="modal-desc">In Google Calendar, go to <strong>Settings → [Your Calendar] → Integrate calendar</strong>. Under "Embed code", copy the URL inside <code>src="…"</code> and paste it below.</p>
-    <label id="modal-label">Google Calendar Embed URL</label>
-    <input type="url" id="modal-input" placeholder="https://calendar.google.com/calendar/embed?src=…" />
+    <div class="modal-title">Her Calendar Setup</div>
+    <div class="modal-sub">
+      In Google Calendar, go to <strong>Settings → [her calendar name] → Integrate calendar</strong>.
+      Under "Embed code", copy the URL from inside <code>src="…"</code> and paste it below.
+    </div>
+    <label class="modal-label">Google Calendar Embed URL</label>
+    <input class="modal-input" type="url" id="modal-input"
+      placeholder="https://calendar.google.com/calendar/embed?src=…" />
     <div class="modal-btns">
       <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="btn-save" onclick="saveCalUrl()">Save</button>
+      <button class="btn-save"   onclick="saveCalUrl()">Save</button>
     </div>
   </div>
 </div>
 
 <script>
-  /* ── Date in header ── */
-  (function(){
-    const d = new Date();
-    const opts = { weekday:'long', year:'numeric', month:'long', day:'numeric' };
-    document.getElementById('header-date').textContent = d.toLocaleDateString('en-GB', opts);
-  })();
+  /* Date */
+  document.getElementById('header-date').textContent =
+    new Date().toLocaleDateString('en-GB', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
 
-  /* ── Storage helpers ── */
-  function ls(k){ try{ return localStorage.getItem(k); } catch(e){ return null; } }
-  function lsSet(k,v){ try{ localStorage.setItem(k,v); } catch(e){} }
+  /* Storage */
+  const ls  = k     => { try { return localStorage.getItem(k);    } catch(e) { return null; } };
+  const lsW = (k,v) => { try { localStorage.setItem(k, v);        } catch(e) {} };
 
-  /* ══ Calendar setup ══ */
-  let activeCalTarget = 'him';
-
-  function openModal(target = 'him'){
-    activeCalTarget = target;
-    const isHim = target === 'him';
-    document.getElementById('modal-title').textContent = isHim ? 'His Calendar — Setup' : 'Her Calendar — Setup';
-    document.getElementById('modal-label').textContent = isHim ? 'His Google Calendar Embed URL' : 'Her Google Calendar Embed URL';
-    document.getElementById('modal-input').value = ls('cal_' + target) || '';
-    document.getElementById('modal-overlay').classList.add('open');
-    setTimeout(() => document.getElementById('modal-input').focus(), 50);
+  /* Render her calendar */
+  function renderHer(url) {
+    const wrap = document.getElementById('cal-her-wrap');
+    const ph   = document.getElementById('cal-her-ph');
+    if (ph) ph.remove();
+    const old = wrap.querySelector('iframe');
+    if (old) old.remove();
+    const f = document.createElement('iframe');
+    f.src     = url;
+    f.loading = 'lazy';
+    wrap.appendChild(f);
   }
 
-  function closeModal(){
-    document.getElementById('modal-overlay').classList.remove('open');
-  }
+  const saved = ls('cal_her');
+  if (saved) renderHer(saved);
 
-  function saveCalUrl(){
+  /* Modal */
+  function openModal() {
+    document.getElementById('modal-input').value = ls('cal_her') || '';
+    document.getElementById('overlay').classList.add('open');
+    setTimeout(() => document.getElementById('modal-input').focus(), 60);
+  }
+  function closeModal() {
+    document.getElementById('overlay').classList.remove('open');
+  }
+  function saveCalUrl() {
     const url = document.getElementById('modal-input').value.trim();
-    if(url) {
-      lsSet('cal_' + activeCalTarget, url);
-      renderCalendar(activeCalTarget, url);
-    }
+    if (url) { lsW('cal_her', url); renderHer(url); }
     closeModal();
   }
 
-  function renderCalendar(who, url){
-    const wrap = document.getElementById('cal-' + who + '-wrap');
-    const ph   = document.getElementById('cal-' + who + '-placeholder');
-    if(ph) ph.remove();
-    // remove old iframe if any
-    const old = wrap.querySelector('iframe');
-    if(old) old.remove();
-    const iframe = document.createElement('iframe');
-    iframe.src = url;
-    iframe.style.cssText = 'width:100%;height:100%;border:none;display:block;';
-    iframe.loading = 'lazy';
-    wrap.appendChild(iframe);
-  }
-
-  /* Load saved calendar URLs on boot */
-  ['him','her'].forEach(who => {
-    const saved = ls('cal_' + who);
-    if(saved) renderCalendar(who, saved);
-  });
-
-  /* ══ Weather ══ */
-  (function fetchWeather(){
-    // Use Open-Meteo (no API key needed) with Copenhagen coords
-    const lat = 55.6761, lon = 12.5683, city = 'Copenhagen';
-    const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,relative_humidity_2m,wind_speed_10m,weather_code&wind_speed_unit=kmh&temperature_unit=celsius`;
-
-    const icons = {
-      0:'☀️', 1:'🌤️', 2:'⛅', 3:'☁️',
-      45:'🌫️', 48:'🌫️',
-      51:'🌦️', 53:'🌦️', 55:'🌧️',
-      61:'🌧️', 63:'🌧️', 65:'🌧️',
-      71:'🌨️', 73:'🌨️', 75:'❄️',
-      80:'🌦️', 81:'🌧️', 82:'⛈️',
-      95:'⛈️', 96:'⛈️', 99:'⛈️'
-    };
-    const descs = {
-      0:'Clear sky',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',
-      45:'Foggy',48:'Icy fog',
-      51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',
-      61:'Light rain',63:'Rain',65:'Heavy rain',
-      71:'Light snow',73:'Snow',75:'Heavy snow',
-      80:'Rain showers',81:'Showers',82:'Violent showers',
-      95:'Thunderstorm',96:'Thunderstorm w/ hail',99:'Heavy thunderstorm'
-    };
-
-    fetch(url)
-      .then(r => r.json())
-      .then(d => {
-        const c = d.current;
-        const code = c.weather_code;
-        const icon = icons[code] || '🌡️';
-        const desc = descs[code] || 'Unknown';
-        document.getElementById('weather-body').innerHTML = `
-          <div class="weather-body">
-            <div class="weather-icon">${icon}</div>
-            <div class="weather-temp">${Math.round(c.temperature_2m)}°C</div>
-            <div class="weather-desc">${desc}</div>
-            <div class="weather-location">${city}</div>
-            <div class="weather-row">
-              <div class="weather-stat"><strong>${c.relative_humidity_2m}%</strong>Humidity</div>
-              <div class="weather-stat"><strong>${Math.round(c.wind_speed_10m)} km/h</strong>Wind</div>
-            </div>
-          </div>`;
-      })
-      .catch(() => {
-        document.getElementById('weather-body').innerHTML =
-          '<div class="weather-loading">Weather unavailable</div>';
-      });
-  })();
-
-  /* ══ To-Do ══ */
-  let todos = JSON.parse(ls('todos') || '[]');
-  let todoId = 0;
-
-  function saveTodos(){ lsSet('todos', JSON.stringify(todos)); }
-
-  function renderTodos(){
-    const list = document.getElementById('todo-list');
-    const empty = document.getElementById('todo-empty');
-    list.innerHTML = '';
-    empty.style.display = todos.length ? 'none' : 'block';
-    todos.forEach(t => {
-      const li = document.createElement('li');
-      li.className = 'todo-item' + (t.done ? ' done' : '');
-      li.innerHTML = `
-        <input type="checkbox" id="td-${t.id}" ${t.done?'checked':''} onchange="toggleTodo(${t.id})"/>
-        <label for="td-${t.id}">${escHtml(t.text)}</label>
-        <button class="del" onclick="deleteTodo(${t.id})">✕</button>`;
-      list.appendChild(li);
-    });
-    todoId = todos.length ? Math.max(...todos.map(x=>x.id)) + 1 : 0;
-  }
-
-  function addTodo(){
-    const inp = document.getElementById('todo-input');
-    const text = inp.value.trim();
-    if(!text) return;
-    todos.push({ id: todoId++, text, done: false });
-    saveTodos(); renderTodos();
-    inp.value = '';
-  }
-
-  function toggleTodo(id){
-    const t = todos.find(x => x.id === id);
-    if(t) t.done = !t.done;
-    saveTodos(); renderTodos();
-  }
-
-  function deleteTodo(id){
-    todos = todos.filter(x => x.id !== id);
-    saveTodos(); renderTodos();
-  }
-
-  renderTodos();
-
-  /* ══ Notes ══ */
-  (function(){
-    const ta = document.getElementById('notes-area');
-    ta.value = ls('notes') || '';
-  })();
-
-  let notesTimer;
-  function saveNotes(){
-    clearTimeout(notesTimer);
-    notesTimer = setTimeout(() => {
-      lsSet('notes', document.getElementById('notes-area').value);
-      const el = document.getElementById('notes-saved');
-      el.textContent = 'Saved ✓';
-      setTimeout(() => el.textContent = '', 1800);
-    }, 600);
-  }
-
-  /* ══ Shopping list ══ */
-  let shopItems = JSON.parse(ls('shopping') || '[]');
-  let shopId = 0;
-
-  function saveShop(){ lsSet('shopping', JSON.stringify(shopItems)); }
-
-  function renderShop(){
-    const list = document.getElementById('shop-list');
-    list.innerHTML = '';
-    shopItems.forEach(i => {
-      const li = document.createElement('li');
-      li.className = 'shop-item' + (i.done ? ' done' : '');
-      li.innerHTML = `
-        <input type="checkbox" id="sh-${i.id}" ${i.done?'checked':''} onchange="toggleShop(${i.id})"/>
-        <label for="sh-${i.id}">${escHtml(i.text)}</label>
-        <button class="del" onclick="deleteShop(${i.id})">✕</button>`;
-      list.appendChild(li);
-    });
-    shopId = shopItems.length ? Math.max(...shopItems.map(x=>x.id)) + 1 : 0;
-  }
-
-  function addShopItem(){
-    const inp = document.getElementById('shop-input');
-    const text = inp.value.trim();
-    if(!text) return;
-    shopItems.push({ id: shopId++, text, done: false });
-    saveShop(); renderShop();
-    inp.value = '';
-  }
-
-  function toggleShop(id){
-    const i = shopItems.find(x => x.id === id);
-    if(i) i.done = !i.done;
-    saveShop(); renderShop();
-  }
-
-  function deleteShop(id){
-    shopItems = shopItems.filter(x => x.id !== id);
-    saveShop(); renderShop();
-  }
-
-  renderShop();
-
-  /* ── Helpers ── */
-  function escHtml(s){
-    return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
 </script>
 </body>
 </html>
