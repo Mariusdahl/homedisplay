@@ -170,5 +170,53 @@
 </div>
 
 
+<button id="fs-btn" onclick="toggleFullscreen()" title="Toggle fullscreen">
+  <svg id="fs-icon-enter" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+  <svg id="fs-icon-exit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="3" y2="21"/><line x1="21" y1="3" x2="14" y2="10"/></svg>
+</button>
+
+<style>
+  #fs-btn {
+    position: fixed;
+    bottom: 28px;
+    right: 28px;
+    z-index: 200;
+    width: 44px;
+    height: 44px;
+    border-radius: 12px;
+    background: rgba(17,17,17,.85);
+    border: 1px solid #2e2e2e;
+    color: #7a7570;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    transition: color .15s, border-color .15s, box-shadow .15s;
+  }
+  #fs-btn:hover {
+    color: #f472b6;
+    border-color: #7b3050;
+    box-shadow: 0 0 18px rgba(244,114,182,.2);
+  }
+  #fs-btn svg { width: 16px; height: 16px; }
+</style>
+
+<script>
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) {
+      document.documentElement.requestFullscreen();
+    } else {
+      document.exitFullscreen();
+    }
+  }
+  document.addEventListener('fullscreenchange', () => {
+    const isFs = !!document.fullscreenElement;
+    document.getElementById('fs-icon-enter').style.display = isFs ? 'none' : '';
+    document.getElementById('fs-icon-exit').style.display  = isFs ? ''     : 'none';
+  });
+</script>
+
 </body>
 </html>
