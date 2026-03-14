@@ -2,11 +2,11 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=2048, initial-scale=1.0" />
   <title>Our Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;1,300;1,400&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet" />
 
   <style>
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
@@ -28,99 +28,48 @@
       --offwhite:   #f0ebe3;
       --offwhite-2: #c9c3bb;
 
-      --radius:     16px;
-      --font-body:  'DM Sans', sans-serif;
-      --font-disp:  'Cormorant Garamond', serif;
+      --radius:     20px;
+      --font-body:  'Archivo', sans-serif;
+      --font-disp:  'Archivo', sans-serif;
+
+      /* Layout tuned for 2048×1536 */
+      --header-h:   80px;
+      --page-pad:   48px;
     }
 
     html, body {
+      width: 100%;
       height: 100%;
       font-family: var(--font-body);
       background: var(--bg);
       color: var(--text);
+      /* prevent the calendar from creating scroll on large screens */
+      overflow: hidden;
     }
 
+    /* grain */
     body::before {
       content: '';
       position: fixed; inset: 0;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-      opacity: .025;
+      opacity: .028;
       pointer-events: none;
       z-index: 0;
-    }
-
-    /* ── Header ── */
-    header {
-      position: sticky;
-      top: 0;
-      z-index: 100;
-      background: rgba(10,10,10,.88);
-      backdrop-filter: blur(16px);
-      -webkit-backdrop-filter: blur(16px);
-      border-bottom: 1px solid var(--border);
-      padding: 0 36px;
-      height: 64px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-    }
-
-    .logo {
-      display: flex;
-      align-items: baseline;
-      gap: 10px;
-    }
-    .logo-word {
-      font-family: var(--font-disp);
-      font-size: 1.65rem;
-      font-weight: 300;
-      letter-spacing: .02em;
-      color: var(--offwhite);
-    }
-    .logo-amp {
-      font-family: var(--font-disp);
-      font-size: 1.65rem;
-      font-style: italic;
-      color: var(--pink-hi);
-    }
-    .logo-dot {
-      width: 6px; height: 6px;
-      border-radius: 50%;
-      background: var(--pink-hi);
-      box-shadow: 0 0 10px var(--pink-hi);
-      align-self: center;
-      margin-left: 1px;
-    }
-
-    .header-right {
-      display: flex;
-      align-items: center;
-      gap: 16px;
-    }
-    .header-date {
-      font-size: .78rem;
-      font-weight: 300;
-      color: var(--muted);
-      letter-spacing: .03em;
     }
 
     /* ── Page ── */
     .page {
       position: relative;
       z-index: 1;
-      max-width: 1400px;
-      margin: 0 auto;
-      padding: 32px 28px 72px;
+      height: 100vh;
+      padding: var(--page-pad);
+      display: flex;
+      flex-direction: column;
     }
 
-    .calendars-row {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 22px;
-    }
-
-    /* ── Card ── */
+    /* ── Calendar card ── */
     .card {
+      flex: 1;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
@@ -128,66 +77,59 @@
       display: flex;
       flex-direction: column;
       transition: border-color .3s;
+      /* subtle pink glow */
+      box-shadow:
+        0 0 0 1px rgba(123,48,80,.06),
+        0 8px 60px rgba(0,0,0,.4),
+        inset 0 1px 0 rgba(255,255,255,.03);
     }
+
+    .card:hover { border-color: #2b1820; }
 
     .card-header {
       display: flex;
       align-items: center;
-      gap: 12px;
-      padding: 18px 22px 16px;
+      gap: 16px;
+      padding: 22px 30px 20px;
       border-bottom: 1px solid var(--border);
       flex-shrink: 0;
+      background: linear-gradient(90deg, rgba(123,48,80,.1) 0%, transparent 60%);
     }
 
     .card-title {
       font-family: var(--font-disp);
-      font-size: 1.3rem;
-      font-weight: 300;
-      letter-spacing: .02em;
+      font-size: 1.0rem;
+      font-weight: 500;
+      letter-spacing: .14em;
+      text-transform: uppercase;
       color: var(--offwhite);
       flex: 1;
     }
 
     .pill {
-      font-size: .67rem;
+      font-size: .72rem;
       font-weight: 500;
-      letter-spacing: .08em;
+      letter-spacing: .09em;
       text-transform: uppercase;
-      padding: 4px 11px;
+      padding: 5px 14px;
       border-radius: 20px;
-      border: 1px solid;
-    }
-    .pill-him {
-      color: var(--offwhite-2);
-      border-color: #333;
-      background: #1a1a1a;
-    }
-    .pill-her {
+      border: 1px solid var(--pink-dim);
       color: var(--pink-hi);
-      border-color: var(--pink-dim);
-      background: rgba(123,48,80,.2);
+      background: rgba(123,48,80,.18);
     }
 
-    .edit-btn {
-      background: transparent;
-      border: 1px solid var(--border-lt);
-      border-radius: 8px;
-      color: var(--muted);
-      font-family: var(--font-body);
-      font-size: .73rem;
-      padding: 5px 12px;
-      cursor: pointer;
-      transition: color .15s, border-color .15s;
-    }
-    .edit-btn:hover {
-      color: var(--pink-hi);
-      border-color: var(--pink-dim);
+    /* thin pink accent line at top of card */
+    .card::before {
+      content: '';
+      display: block;
+      height: 2px;
+      background: linear-gradient(90deg, var(--pink-dim), var(--pink-hi) 40%, transparent 100%);
+      flex-shrink: 0;
     }
 
     /* ── Calendar iframe ── */
     .cal-wrap {
       flex: 1;
-      min-height: 540px;
       position: relative;
     }
     .cal-wrap iframe {
@@ -195,307 +137,38 @@
       width: 100%; height: 100%;
       border: none;
       display: block;
-      filter: invert(1) hue-rotate(180deg) brightness(.88) saturate(1.15) contrast(1.05);
+      filter: invert(1) hue-rotate(180deg) brightness(.88) saturate(1.2) contrast(1.05);
     }
 
-    /* placeholder */
-    .cal-placeholder {
-      position: absolute; inset: 0;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      justify-content: center;
-      gap: 20px;
-      padding: 40px;
-      text-align: center;
-    }
-    .ph-icon { font-size: 2.6rem; opacity: .2; }
-    .ph-title {
-      font-family: var(--font-disp);
-      font-size: 1.15rem;
-      font-weight: 300;
-      color: var(--offwhite-2);
-    }
-    .ph-body {
-      font-size: .8rem;
-      color: var(--muted);
-      line-height: 1.75;
-      max-width: 300px;
-    }
-    .ph-body strong { color: var(--offwhite-2); }
-    .ph-btn {
-      background: var(--pink-dim);
-      color: var(--offwhite);
-      border: none;
-      border-radius: 10px;
-      padding: 11px 24px;
-      font-family: var(--font-body);
-      font-size: .82rem;
-      cursor: pointer;
-      transition: background .2s, box-shadow .2s;
-    }
-    .ph-btn:hover {
-      background: var(--pink-mid);
-      box-shadow: 0 0 22px rgba(192,96,126,.35);
-    }
-
-    /* her card tinted */
-    .card-her {
-      border-color: #2b1820;
-      box-shadow: 0 0 50px rgba(123,48,80,.06);
-    }
-    .card-her:hover { border-color: #4a2035; }
-    .card-her .card-header {
-      background: linear-gradient(90deg, rgba(123,48,80,.14) 0%, transparent 70%);
-    }
-
-    /* him card hover */
-    .card-him:hover { border-color: #3a3530; }
-
-    /* ── Modal ── */
-    .overlay {
-      display: none;
-      position: fixed; inset: 0;
-      background: rgba(0,0,0,.75);
-      backdrop-filter: blur(8px);
-      z-index: 300;
-      align-items: center;
-      justify-content: center;
-    }
-    .overlay.open { display: flex; }
-
-    .modal {
-      background: var(--surface-2);
-      border: 1px solid var(--border-lt);
-      border-radius: var(--radius);
-      box-shadow: 0 28px 90px rgba(0,0,0,.6), 0 0 0 1px rgba(244,114,182,.05);
-      padding: 34px;
-      width: min(500px, 94vw);
-      animation: rise .22s ease;
-    }
-    @keyframes rise {
-      from { opacity:0; transform:translateY(14px); }
-      to   { opacity:1; transform:translateY(0); }
-    }
-
-    .modal-title {
-      font-family: var(--font-disp);
-      font-size: 1.45rem;
-      font-weight: 300;
-      color: var(--offwhite);
-      margin-bottom: 8px;
-    }
-    .modal-sub {
-      font-size: .8rem;
-      color: var(--muted);
-      line-height: 1.75;
-      margin-bottom: 24px;
-    }
-    .modal-sub strong { color: var(--offwhite-2); }
-    .modal-sub code {
-      color: var(--pink-hi);
-      font-size: .85em;
-      background: rgba(244,114,182,.08);
-      padding: 1px 5px;
-      border-radius: 4px;
-    }
-    .modal-label {
-      display: block;
-      font-size: .7rem;
-      font-weight: 500;
-      letter-spacing: .08em;
-      text-transform: uppercase;
-      color: var(--muted);
-      margin-bottom: 8px;
-    }
-    .modal-input {
-      width: 100%;
-      background: var(--surface);
-      border: 1px solid var(--border-lt);
-      border-radius: 9px;
-      padding: 11px 14px;
-      font-family: var(--font-body);
-      font-size: .88rem;
-      color: var(--text);
-      outline: none;
-      transition: border-color .15s, box-shadow .15s;
-    }
-    .modal-input:focus {
-      border-color: var(--pink-mid);
-      box-shadow: 0 0 0 3px rgba(192,96,126,.15);
-    }
-    .modal-input::placeholder { color: #444; }
-
-    .modal-btns {
-      display: flex;
-      gap: 10px;
-      justify-content: flex-end;
-      margin-top: 22px;
-    }
-    .modal-btns button {
-      border: none;
-      border-radius: 9px;
-      padding: 10px 22px;
-      font-family: var(--font-body);
-      font-size: .84rem;
-      cursor: pointer;
-      transition: opacity .15s, background .15s, box-shadow .15s;
-    }
-    .btn-cancel {
-      background: transparent;
-      border: 1px solid var(--border-lt) !important;
-      color: var(--muted);
-    }
-    .btn-cancel:hover { color: var(--text); }
-    .btn-save {
-      background: var(--pink-dim);
-      color: var(--offwhite);
-    }
-    .btn-save:hover {
-      background: var(--pink-mid);
-      box-shadow: 0 0 20px rgba(192,96,126,.35);
-    }
-
-    /* header setup button */
-    .hdr-btn {
-      background: transparent;
-      border: 1px solid var(--border-lt);
-      border-radius: 9px;
-      color: var(--muted);
-      font-family: var(--font-body);
-      font-size: .76rem;
-      padding: 7px 15px;
-      cursor: pointer;
-      letter-spacing: .02em;
-      transition: color .15s, border-color .15s;
-    }
-    .hdr-btn:hover {
-      color: var(--pink-hi);
-      border-color: var(--pink-dim);
-    }
-
-    /* ── Responsive ── */
-    @media (max-width: 820px) {
-      .calendars-row { grid-template-columns: 1fr; }
-      header { padding: 0 18px; }
-      .page  { padding: 20px 14px 48px; }
+    /* ── Responsive fallback (small screens) ── */
+    @media (max-width: 900px) {
+      :root {
+        --header-h:  64px;
+        --page-pad:  20px;
+      }
+      .logo-word, .logo-amp { font-size: 1.1rem; }
+      html, body { overflow: auto; }
+      .page { height: auto; min-height: calc(100vh - var(--header-h)); }
+      .card { min-height: 600px; }
     }
   </style>
 </head>
 <body>
 
-<header>
-  <div class="logo">
-    <span class="logo-word">Marius</span>
-    <span class="logo-amp">&amp;</span>
-    <span class="logo-word">Wife</span>
-    <span class="logo-dot"></span>
-  </div>
-  <div class="header-right">
-    <div class="header-date" id="header-date"></div>
-    <button class="hdr-btn" onclick="openModal()">⚙ Setup her calendar</button>
-  </div>
-</header>
+
 
 <div class="page">
-  <div class="calendars-row">
+  <div class="card">
 
-    <!-- His (hardcoded) -->
-    <div class="card card-him">
-      <div class="card-header">
-        <h2 class="card-title">Marius</h2>
-        <span class="pill pill-him">Him</span>
-      </div>
-      <div class="cal-wrap">
-        <iframe
-          src="https://calendar.google.com/calendar/embed?src=mail%40mariusdahl.dk&ctz=Europe%2FCopenhagen"
-          loading="lazy"
-        ></iframe>
-      </div>
-    </div>
-
-    <!-- Hers (configurable) -->
-    <div class="card card-her">
-      <div class="card-header">
-        <h2 class="card-title">Wife</h2>
-        <span class="pill pill-her">Her</span>
-        <button class="edit-btn" onclick="openModal()">Edit URL</button>
-      </div>
-      <div class="cal-wrap" id="cal-her-wrap">
-        <div class="cal-placeholder" id="cal-her-ph">
-          <div class="ph-icon">🗓</div>
-          <div class="ph-title">Add her calendar</div>
-          <div class="ph-body">
-            Go to <strong>Google Calendar → Settings → [Calendar] → Integrate calendar</strong>,
-            copy the URL from inside the embed <strong>src="…"</strong> and paste it here.
-          </div>
-          <button class="ph-btn" onclick="openModal()">Add Calendar URL</button>
-        </div>
-      </div>
-    </div>
-
-  </div>
-</div>
-
-<!-- Modal -->
-<div class="overlay" id="overlay" onclick="if(event.target===this)closeModal()">
-  <div class="modal">
-    <div class="modal-title">Her Calendar Setup</div>
-    <div class="modal-sub">
-      In Google Calendar, go to <strong>Settings → [her calendar name] → Integrate calendar</strong>.
-      Under "Embed code", copy the URL from inside <code>src="…"</code> and paste it below.
-    </div>
-    <label class="modal-label">Google Calendar Embed URL</label>
-    <input class="modal-input" type="url" id="modal-input"
-      placeholder="https://calendar.google.com/calendar/embed?src=…" />
-    <div class="modal-btns">
-      <button class="btn-cancel" onclick="closeModal()">Cancel</button>
-      <button class="btn-save"   onclick="saveCalUrl()">Save</button>
+    <div class="cal-wrap">
+      <iframe
+        src="https://calendar.google.com/calendar/embed?src=c_0afd4c2d6cf6502a6bfe2df7aa9f93dc5fcb4518093656dd2d853bb17de6c0cd%40group.calendar.google.com&ctz=Europe%2FCopenhagen"
+        loading="lazy"
+      ></iframe>
     </div>
   </div>
 </div>
 
-<script>
-  /* Date */
-  document.getElementById('header-date').textContent =
-    new Date().toLocaleDateString('en-GB', { weekday:'long', year:'numeric', month:'long', day:'numeric' });
 
-  /* Storage */
-  const ls  = k     => { try { return localStorage.getItem(k);    } catch(e) { return null; } };
-  const lsW = (k,v) => { try { localStorage.setItem(k, v);        } catch(e) {} };
-
-  /* Render her calendar */
-  function renderHer(url) {
-    const wrap = document.getElementById('cal-her-wrap');
-    const ph   = document.getElementById('cal-her-ph');
-    if (ph) ph.remove();
-    const old = wrap.querySelector('iframe');
-    if (old) old.remove();
-    const f = document.createElement('iframe');
-    f.src     = url;
-    f.loading = 'lazy';
-    wrap.appendChild(f);
-  }
-
-  const saved = ls('cal_her');
-  if (saved) renderHer(saved);
-
-  /* Modal */
-  function openModal() {
-    document.getElementById('modal-input').value = ls('cal_her') || '';
-    document.getElementById('overlay').classList.add('open');
-    setTimeout(() => document.getElementById('modal-input').focus(), 60);
-  }
-  function closeModal() {
-    document.getElementById('overlay').classList.remove('open');
-  }
-  function saveCalUrl() {
-    const url = document.getElementById('modal-input').value.trim();
-    if (url) { lsW('cal_her', url); renderHer(url); }
-    closeModal();
-  }
-
-  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
-</script>
 </body>
 </html>
