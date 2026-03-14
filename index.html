@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=2048, initial-scale=1.0" />
-  <title>Our Dashboard</title>
+  <title>Family Dashboard</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Archivo:ital,wght@0,300;0,400;0,500;0,600;1,300&display=swap" rel="stylesheet" />
@@ -17,33 +17,25 @@
       --surface-2:  #181818;
       --border:     #242424;
       --border-lt:  #2e2e2e;
-
       --text:       #f0ebe3;
       --muted:      #7a7570;
-
       --pink-hi:    #f472b6;
       --pink-mid:   #c0607e;
       --pink-dim:   #7b3050;
-
       --offwhite:   #f0ebe3;
       --offwhite-2: #c9c3bb;
-
-      --radius:     20px;
-      --font-body:  'Archivo', sans-serif;
-      --font-disp:  'Archivo', sans-serif;
-
-      /* Layout tuned for 2048×1536 */
-      --header-h:   80px;
-      --page-pad:   48px;
+      --green:      #4ade80;
+      --green-dim:  #166534;
+      --radius:     16px;
+      --font:       'Archivo', sans-serif;
+      --page-pad:   32px;
     }
 
     html, body {
-      width: 100%;
-      height: 100%;
-      font-family: var(--font-body);
+      width: 100%; height: 100%;
+      font-family: var(--font);
       background: var(--bg);
       color: var(--text);
-      /* prevent the calendar from creating scroll on large screens */
       overflow: hidden;
     }
 
@@ -52,85 +44,209 @@
       content: '';
       position: fixed; inset: 0;
       background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.75' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='1'/%3E%3C/svg%3E");
-      opacity: .028;
+      opacity: .025;
       pointer-events: none;
       z-index: 0;
     }
 
-    /* ── Page ── */
-    .page {
+    /* ── Layout ── */
+    .dashboard {
       position: relative;
       z-index: 1;
-      height: 100vh;
+      display: grid;
+      grid-template-columns: 380px 1fr 380px;
+      grid-template-rows: 100vh;
+      gap: var(--page-pad);
       padding: var(--page-pad);
-      display: flex;
-      flex-direction: column;
+      height: 100vh;
     }
 
-    /* ── Calendar card ── */
+    /* ── Columns ── */
+    .col {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      min-height: 0;
+    }
+
+    /* ── Card ── */
     .card {
-      flex: 1;
       background: var(--surface);
       border: 1px solid var(--border);
       border-radius: var(--radius);
       overflow: hidden;
       display: flex;
       flex-direction: column;
+      box-shadow: 0 4px 40px rgba(0,0,0,.35);
       transition: border-color .3s;
-      /* subtle pink glow */
-      box-shadow:
-        0 0 0 1px rgba(123,48,80,.06),
-        0 8px 60px rgba(0,0,0,.4),
-        inset 0 1px 0 rgba(255,255,255,.03);
     }
+    .card-fill { flex: 1; min-height: 0; }
 
-    .card:hover { border-color: #2b1820; }
+    .card-top {
+      height: 2px;
+      flex-shrink: 0;
+    }
+    .pink-top  { background: linear-gradient(90deg, var(--pink-dim), var(--pink-hi) 50%, transparent); }
+    .green-top { background: linear-gradient(90deg, var(--green-dim), var(--green) 50%, transparent); }
+    .white-top { background: linear-gradient(90deg, #333, #666 50%, transparent); }
 
     .card-header {
       display: flex;
       align-items: center;
-      gap: 16px;
-      padding: 22px 30px 20px;
+      gap: 10px;
+      padding: 14px 18px 13px;
       border-bottom: 1px solid var(--border);
       flex-shrink: 0;
-      background: linear-gradient(90deg, rgba(123,48,80,.1) 0%, transparent 60%);
     }
-
-    .card-title {
-      font-family: var(--font-disp);
-      font-size: 1.0rem;
-      font-weight: 500;
-      letter-spacing: .14em;
+    .card-header h2 {
+      font-size: .72rem;
+      font-weight: 600;
+      letter-spacing: .1em;
       text-transform: uppercase;
-      color: var(--offwhite);
+      color: var(--offwhite-2);
       flex: 1;
     }
 
-    .pill {
-      font-size: .72rem;
-      font-weight: 500;
-      letter-spacing: .09em;
-      text-transform: uppercase;
-      padding: 5px 14px;
-      border-radius: 20px;
-      border: 1px solid var(--pink-dim);
-      color: var(--pink-hi);
-      background: rgba(123,48,80,.18);
-    }
-
-    /* thin pink accent line at top of card */
-    .card::before {
-      content: '';
-      display: block;
-      height: 2px;
-      background: linear-gradient(90deg, var(--pink-dim), var(--pink-hi) 40%, transparent 100%);
+    /* status dot */
+    .dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
       flex-shrink: 0;
     }
+    .dot-pink  { background: var(--pink-hi);  box-shadow: 0 0 6px var(--pink-hi); }
+    .dot-green { background: var(--green);     box-shadow: 0 0 6px var(--green); }
+    .dot-muted { background: var(--border-lt); }
+
+    /* connect button */
+    .connect-btn {
+      background: transparent;
+      border: 1px solid var(--border-lt);
+      border-radius: 8px;
+      color: var(--muted);
+      font-family: var(--font);
+      font-size: .7rem;
+      font-weight: 500;
+      letter-spacing: .04em;
+      padding: 4px 11px;
+      cursor: pointer;
+      transition: color .15s, border-color .15s;
+    }
+    .connect-btn:hover { color: var(--pink-hi); border-color: var(--pink-dim); }
+    .connect-btn.green:hover { color: var(--green); border-color: var(--green-dim); }
+    .connect-btn.disconnect { color: #555; font-size: .65rem; border-color: #222; }
+    .connect-btn.disconnect:hover { color: #f87171; border-color: #7f1d1d; }
+
+    /* ── Task list ── */
+    .task-body {
+      flex: 1;
+      overflow-y: auto;
+      padding: 10px 14px 14px;
+      scrollbar-width: thin;
+      scrollbar-color: #222 transparent;
+    }
+    .task-body::-webkit-scrollbar { width: 4px; }
+    .task-body::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; }
+
+    .task-list-label {
+      font-size: .62rem;
+      font-weight: 600;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: #333;
+      padding: 8px 4px 5px;
+    }
+
+    .task-item {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      padding: 8px 6px;
+      border-radius: 8px;
+      transition: background .15s;
+      cursor: default;
+    }
+    .task-item:hover { background: var(--surface-2); }
+
+    .task-check {
+      width: 16px; height: 16px;
+      border-radius: 50%;
+      border: 1.5px solid #333;
+      flex-shrink: 0;
+      margin-top: 2px;
+      transition: border-color .15s, background .15s;
+      cursor: pointer;
+      position: relative;
+    }
+    .task-check:hover { border-color: var(--pink-mid); }
+    .task-check.green-check:hover { border-color: var(--green); }
+    .task-check.done {
+      background: #222;
+      border-color: #333;
+    }
+    .task-check.done::after {
+      content: '';
+      position: absolute;
+      top: 3px; left: 3px;
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: #444;
+    }
+
+    .task-info { flex: 1; min-width: 0; }
+    .task-title {
+      font-size: .82rem;
+      font-weight: 400;
+      color: var(--text);
+      line-height: 1.4;
+      word-break: break-word;
+    }
+    .task-title.done { text-decoration: line-through; color: #444; }
+
+    .task-meta {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      margin-top: 3px;
+      flex-wrap: wrap;
+    }
+    .task-due {
+      font-size: .68rem;
+      color: var(--muted);
+    }
+    .task-due.overdue { color: #f87171; }
+    .task-due.today   { color: var(--pink-hi); }
+
+    /* star = significant */
+    .task-star {
+      font-size: .75rem;
+      line-height: 1;
+      color: #f59e0b;
+      flex-shrink: 0;
+      margin-top: 2px;
+    }
+
+    .task-notes {
+      font-size: .72rem;
+      color: #555;
+      margin-top: 2px;
+      line-height: 1.4;
+    }
+
+    /* empty / loading states */
+    .state-msg {
+      padding: 24px 16px;
+      text-align: center;
+      font-size: .78rem;
+      color: #333;
+      line-height: 1.7;
+    }
+    .state-msg .big { font-size: 1.6rem; display: block; margin-bottom: 8px; opacity: .3; }
 
     /* ── Calendar iframe ── */
     .cal-wrap {
       flex: 1;
       position: relative;
+      min-height: 0;
     }
     .cal-wrap iframe {
       position: absolute; inset: 0;
@@ -140,82 +256,425 @@
       filter: invert(1) hue-rotate(180deg) brightness(.88) saturate(1.2) contrast(1.05);
     }
 
-    /* ── Responsive fallback (small screens) ── */
-    @media (max-width: 900px) {
-      :root {
-        --header-h:  64px;
-        --page-pad:  20px;
-      }
-      .logo-word, .logo-amp { font-size: 1.1rem; }
-      html, body { overflow: auto; }
-      .page { height: auto; min-height: calc(100vh - var(--header-h)); }
-      .card { min-height: 600px; }
+    /* ── Date/time card ── */
+    .datetime-body {
+      padding: 18px 18px 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 2px;
     }
+    .dt-time {
+      font-size: 2.8rem;
+      font-weight: 300;
+      letter-spacing: -.02em;
+      color: var(--offwhite);
+      line-height: 1;
+    }
+    .dt-time span { color: var(--pink-hi); }
+    .dt-date {
+      font-size: .78rem;
+      font-weight: 300;
+      color: var(--muted);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-top: 4px;
+    }
+
+    /* ── Fullscreen btn ── */
+    #fs-btn {
+      position: fixed;
+      bottom: 20px; right: 20px;
+      z-index: 300;
+      width: 40px; height: 40px;
+      border-radius: 10px;
+      background: rgba(17,17,17,.9);
+      border: 1px solid #2a2a2a;
+      color: #555;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      backdrop-filter: blur(10px);
+      transition: color .15s, border-color .15s, box-shadow .15s;
+    }
+    #fs-btn:hover { color: var(--pink-hi); border-color: var(--pink-dim); box-shadow: 0 0 14px rgba(244,114,182,.2); }
+    #fs-btn svg { width: 14px; height: 14px; }
+
+    /* ── Refresh indicator ── */
+    .refresh-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: #333;
+      flex-shrink: 0;
+      transition: background .3s;
+    }
+    .refresh-dot.active { background: var(--pink-hi); }
   </style>
 </head>
 <body>
 
+<div class="dashboard">
 
+  <!-- ══ LEFT COL — Marius's tasks ══ -->
+  <div class="col">
 
-<div class="page">
-  <div class="card">
+    <!-- Date/time -->
+    <div class="card">
+      <div class="card-top white-top"></div>
+      <div class="datetime-body">
+        <div class="dt-time" id="dt-time">00<span>:</span>00</div>
+        <div class="dt-date" id="dt-date">—</div>
+      </div>
+    </div>
 
-    <div class="cal-wrap">
-      <iframe
-        src="https://calendar.google.com/calendar/embed?src=c_0afd4c2d6cf6502a6bfe2df7aa9f93dc5fcb4518093656dd2d853bb17de6c0cd%40group.calendar.google.com&ctz=Europe%2FCopenhagen"
-        loading="lazy"
-      ></iframe>
+    <!-- Marius tasks -->
+    <div class="card card-fill">
+      <div class="card-top pink-top"></div>
+      <div class="card-header">
+        <div class="dot" id="dot-marius"></div>
+        <h2>Marius</h2>
+        <div class="refresh-dot" id="rdot-marius"></div>
+        <button class="connect-btn" id="btn-marius" onclick="connectAccount('marius')">Connect</button>
+      </div>
+      <div class="task-body" id="tasks-marius">
+        <div class="state-msg"><span class="big">👤</span>Connect your Google account<br>to see your tasks here.</div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ══ CENTRE COL — Calendar ══ -->
+  <div class="col">
+    <div class="card card-fill">
+      <div class="card-top pink-top"></div>
+      <div class="cal-wrap">
+        <iframe
+          src="https://calendar.google.com/calendar/embed?src=c_0afd4c2d6cf6502a6bfe2df7aa9f93dc5fcb4518093656dd2d853bb17de6c0cd%40group.calendar.google.com&ctz=Europe%2FCopenhagen"
+          loading="lazy"
+        ></iframe>
+      </div>
     </div>
   </div>
-</div>
 
+  <!-- ══ RIGHT COL — Wife's tasks ══ -->
+  <div class="col">
 
+    <!-- Wife tasks -->
+    <div class="card card-fill">
+      <div class="card-top green-top"></div>
+      <div class="card-header">
+        <div class="dot" id="dot-wife"></div>
+        <h2>Wife</h2>
+        <div class="refresh-dot" id="rdot-wife"></div>
+        <button class="connect-btn green" id="btn-wife" onclick="connectAccount('wife')">Connect</button>
+      </div>
+      <div class="task-body" id="tasks-wife">
+        <div class="state-msg"><span class="big">👤</span>Connect wife's Google account<br>to see her tasks here.</div>
+      </div>
+    </div>
+
+    <!-- Quick legend -->
+    <div class="card">
+      <div class="card-top white-top"></div>
+      <div style="padding:14px 18px;display:flex;flex-direction:column;gap:8px;">
+        <div style="font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#333;margin-bottom:2px;">Legend</div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:.74rem;color:var(--muted);">
+          <span style="color:#f59e0b;font-size:.85rem;">★</span> Starred / significant task
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:.74rem;color:var(--muted);">
+          <span style="color:#f87171;font-size:.74rem;font-weight:600;">!</span> Overdue
+        </div>
+        <div style="display:flex;align-items:center;gap:8px;font-size:.74rem;color:var(--muted);">
+          <span style="color:var(--pink-hi);font-size:.74rem;font-weight:600;">•</span> Due today
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+</div><!-- /dashboard -->
+
+<!-- Fullscreen button -->
 <button id="fs-btn" onclick="toggleFullscreen()" title="Toggle fullscreen">
-  <svg id="fs-icon-enter" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
-  <svg id="fs-icon-exit" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="3" y2="21"/><line x1="21" y1="3" x2="14" y2="10"/></svg>
+  <svg id="fs-enter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
+  <svg id="fs-exit"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="3" y2="21"/><line x1="21" y1="3" x2="14" y2="10"/></svg>
 </button>
 
-<style>
-  #fs-btn {
-    position: fixed;
-    bottom: 28px;
-    right: 28px;
-    z-index: 200;
-    width: 44px;
-    height: 44px;
-    border-radius: 12px;
-    background: rgba(17,17,17,.85);
-    border: 1px solid #2e2e2e;
-    color: #7a7570;
-    cursor: pointer;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    transition: color .15s, border-color .15s, box-shadow .15s;
-  }
-  #fs-btn:hover {
-    color: #f472b6;
-    border-color: #7b3050;
-    box-shadow: 0 0 18px rgba(244,114,182,.2);
-  }
-  #fs-btn svg { width: 16px; height: 16px; }
-</style>
+<!-- Google Identity Services -->
+<script src="https://accounts.google.com/gsi/client" async defer></script>
 
 <script>
-  function toggleFullscreen() {
-    if (!document.fullscreenElement) {
-      document.documentElement.requestFullscreen();
-    } else {
-      document.exitFullscreen();
+const CLIENT_ID = '228569317020-k21ano70j6psekmih6h6bt44thibuf9t.apps.googleusercontent.com';
+const SCOPES    = 'https://www.googleapis.com/auth/tasks.readonly';
+const TASKS_API = 'https://tasks.googleapis.com/tasks/v1';
+
+// tokens stored per account key
+const state = {
+  marius: { token: null, name: 'Marius' },
+  wife:   { token: null, name: 'Wife'   }
+};
+
+/* ── Load saved tokens ── */
+function loadTokens() {
+  ['marius','wife'].forEach(who => {
+    const saved = localStorage.getItem('token_' + who);
+    if (saved) {
+      try {
+        state[who].token = JSON.parse(saved);
+      } catch(e) {}
     }
-  }
-  document.addEventListener('fullscreenchange', () => {
-    const isFs = !!document.fullscreenElement;
-    document.getElementById('fs-icon-enter').style.display = isFs ? 'none' : '';
-    document.getElementById('fs-icon-exit').style.display  = isFs ? ''     : 'none';
   });
+}
+
+function saveToken(who, token) {
+  state[who].token = token;
+  localStorage.setItem('token_' + who, JSON.stringify(token));
+}
+
+function clearToken(who) {
+  state[who].token = null;
+  localStorage.removeItem('token_' + who);
+}
+
+/* ── OAuth via Google Identity Services ── */
+let tokenClients = {};
+
+function initTokenClients() {
+  ['marius','wife'].forEach(who => {
+    tokenClients[who] = google.accounts.oauth2.initTokenClient({
+      client_id: CLIENT_ID,
+      scope: SCOPES,
+      callback: (response) => {
+        if (response.error) {
+          console.error('Auth error for', who, response.error);
+          return;
+        }
+        const token = {
+          access_token: response.access_token,
+          expires_at: Date.now() + (response.expires_in * 1000)
+        };
+        saveToken(who, token);
+        updateUI(who, true);
+        fetchTasks(who);
+      }
+    });
+  });
+}
+
+function connectAccount(who) {
+  if (state[who].token) {
+    // disconnect
+    if (confirm('Disconnect ' + state[who].name + '\'s account?')) {
+      clearToken(who);
+      updateUI(who, false);
+      document.getElementById('tasks-' + who).innerHTML =
+        `<div class="state-msg"><span class="big">👤</span>Connect ${state[who].name}'s Google account<br>to see tasks here.</div>`;
+    }
+    return;
+  }
+  // prompt=select_account forces account picker so each person can choose their own account
+  tokenClients[who].requestAccessToken({ prompt: 'select_account' });
+}
+
+function updateUI(who, connected) {
+  const dot = document.getElementById('dot-' + who);
+  const btn = document.getElementById('btn-' + who);
+  if (connected) {
+    dot.className = 'dot ' + (who === 'marius' ? 'dot-pink' : 'dot-green');
+    btn.textContent = 'Disconnect';
+    btn.classList.add('disconnect');
+    btn.classList.remove('green');
+  } else {
+    dot.className = 'dot dot-muted';
+    btn.textContent = 'Connect';
+    btn.classList.remove('disconnect');
+    if (who === 'wife') btn.classList.add('green');
+  }
+}
+
+/* ── Fetch tasks ── */
+async function fetchTasks(who) {
+  const token = state[who].token;
+  if (!token) return;
+
+  // check expiry
+  if (Date.now() > token.expires_at - 60000) {
+    clearToken(who);
+    updateUI(who, false);
+    document.getElementById('tasks-' + who).innerHTML =
+      `<div class="state-msg"><span class="big">🔄</span>Session expired.<br>Please reconnect.</div>`;
+    return;
+  }
+
+  // flash refresh dot
+  const rdot = document.getElementById('rdot-' + who);
+  rdot.classList.add('active');
+  setTimeout(() => rdot.classList.remove('active'), 800);
+
+  try {
+    // 1. get all task lists
+    const listsRes = await fetch(`${TASKS_API}/users/@me/lists?maxResults=20`, {
+      headers: { Authorization: 'Bearer ' + token.access_token }
+    });
+    if (!listsRes.ok) throw new Error('lists fetch failed: ' + listsRes.status);
+    const listsData = await listsRes.json();
+    const lists = listsData.items || [];
+
+    // 2. fetch tasks for each list in parallel
+    const allLists = await Promise.all(lists.map(async list => {
+      const tasksRes = await fetch(
+        `${TASKS_API}/lists/${list.id}/tasks?maxResults=100&showCompleted=true&showHidden=false`,
+        { headers: { Authorization: 'Bearer ' + token.access_token } }
+      );
+      const tasksData = await tasksRes.json();
+      return { list, tasks: tasksData.items || [] };
+    }));
+
+    renderTasks(who, allLists);
+  } catch(e) {
+    console.error('fetchTasks error', who, e);
+    document.getElementById('tasks-' + who).innerHTML =
+      `<div class="state-msg"><span class="big">⚠️</span>Couldn't load tasks.<br><small style="color:#555">${e.message}</small></div>`;
+  }
+}
+
+/* ── Render tasks ── */
+function renderTasks(who, allLists) {
+  const container = document.getElementById('tasks-' + who);
+  const isGreen   = who === 'wife';
+  const today     = new Date(); today.setHours(0,0,0,0);
+
+  let html = '';
+  let totalVisible = 0;
+
+  allLists.forEach(({ list, tasks }) => {
+    // filter: show incomplete + completed tasks (completed shown greyed)
+    const visible = tasks.filter(t => t.title && t.title.trim());
+    if (!visible.length) return;
+    totalVisible += visible.length;
+
+    html += `<div class="task-list-label">${escHtml(list.title)}</div>`;
+
+    // sort: incomplete first, then by due date, then starred
+    const sorted = visible.slice().sort((a, b) => {
+      if (a.status === 'completed' && b.status !== 'completed') return 1;
+      if (a.status !== 'completed' && b.status === 'completed') return -1;
+      // starred (notes field trick — Google Tasks uses 'starred' in some clients)
+      const aStarred = a.title.startsWith('★') || a.title.startsWith('*');
+      const bStarred = b.title.startsWith('★') || b.title.startsWith('*');
+      if (aStarred && !bStarred) return -1;
+      if (!aStarred && bStarred) return 1;
+      if (a.due && b.due) return new Date(a.due) - new Date(b.due);
+      if (a.due) return -1;
+      if (b.due) return 1;
+      return 0;
+    });
+
+    sorted.forEach(task => {
+      const done     = task.status === 'completed';
+      const starred  = task.title.startsWith('★') || task.title.startsWith('*');
+      const title    = task.title.replace(/^[★\*]\s*/, '');
+
+      let dueHtml = '';
+      let overdueClass = '';
+      if (task.due) {
+        const dueDate = new Date(task.due); dueDate.setHours(0,0,0,0);
+        const diff    = Math.round((dueDate - today) / 86400000);
+        let dueLabel  = '';
+        let dueClass  = 'task-due';
+        if (diff < 0)      { dueLabel = `${Math.abs(diff)}d overdue`; dueClass += ' overdue'; overdueClass = 'overdue'; }
+        else if (diff === 0) { dueLabel = 'Today';   dueClass += ' today'; }
+        else if (diff === 1) { dueLabel = 'Tomorrow'; }
+        else                 { dueLabel = dueDate.toLocaleDateString('en-GB', { day:'numeric', month:'short' }); }
+        if (!done) dueHtml = `<span class="${dueClass}">${dueLabel}</span>`;
+      }
+
+      const checkClass = `task-check${done ? ' done' : ''}${isGreen ? ' green-check' : ''}`;
+      const titleClass = `task-title${done ? ' done' : ''}`;
+
+      html += `
+        <div class="task-item">
+          <div class="${checkClass}"></div>
+          <div class="task-info">
+            <div class="${titleClass}">${escHtml(title)}</div>
+            ${dueHtml || task.notes ? `
+            <div class="task-meta">
+              ${dueHtml}
+            </div>` : ''}
+            ${task.notes && !done ? `<div class="task-notes">${escHtml(task.notes.substring(0,80))}${task.notes.length>80?'…':''}</div>` : ''}
+          </div>
+          ${starred && !done ? `<div class="task-star">★</div>` : ''}
+          ${overdueClass && !done ? `<div style="font-size:.7rem;font-weight:700;color:#f87171;flex-shrink:0;margin-top:2px;">!</div>` : ''}
+        </div>`;
+    });
+  });
+
+  if (!totalVisible) {
+    html = `<div class="state-msg"><span class="big">✓</span>All clear!<br>No tasks found.</div>`;
+  }
+
+  container.innerHTML = html;
+}
+
+function escHtml(s) {
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
+    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+/* ── Auto-refresh every 3 minutes ── */
+function refreshAll() {
+  ['marius','wife'].forEach(who => {
+    if (state[who].token) fetchTasks(who);
+  });
+}
+
+/* ── Clock ── */
+function updateClock() {
+  const now  = new Date();
+  const hh   = String(now.getHours()).padStart(2,'0');
+  const mm   = String(now.getMinutes()).padStart(2,'0');
+  const colon = now.getSeconds() % 2 === 0 ? '<span>:</span>' : '<span style="opacity:.3">:</span>';
+  document.getElementById('dt-time').innerHTML = hh + colon + mm;
+  document.getElementById('dt-date').textContent = now.toLocaleDateString('en-GB', {
+    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
+  });
+}
+
+/* ── Fullscreen ── */
+function toggleFullscreen() {
+  if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+  else document.exitFullscreen();
+}
+document.addEventListener('fullscreenchange', () => {
+  const fs = !!document.fullscreenElement;
+  document.getElementById('fs-enter').style.display = fs ? 'none' : '';
+  document.getElementById('fs-exit').style.display  = fs ? ''     : 'none';
+});
+
+/* ── Boot ── */
+window.addEventListener('load', () => {
+  loadTokens();
+
+  // init Google client once library loads
+  const waitForGoogle = setInterval(() => {
+    if (window.google && google.accounts) {
+      clearInterval(waitForGoogle);
+      initTokenClients();
+      // auto-load tasks if tokens already saved
+      ['marius','wife'].forEach(who => {
+        if (state[who].token) {
+          updateUI(who, true);
+          fetchTasks(who);
+        }
+      });
+    }
+  }, 200);
+
+  updateClock();
+  setInterval(updateClock, 1000);
+  setInterval(refreshAll, 3 * 60 * 1000);
+});
 </script>
 
 </body>
