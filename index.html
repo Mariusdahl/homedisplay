@@ -528,7 +528,7 @@ async function fetchTasks(who) {
     // 2. fetch tasks for each list in parallel
     const allLists = await Promise.all(lists.map(async list => {
       const tasksRes = await fetch(
-        `${TASKS_API}/lists/${list.id}/tasks?maxResults=100&showCompleted=true&showHidden=false`,
+        `${TASKS_API}/lists/${list.id}/tasks?maxResults=100&showCompleted=false&showHidden=false`,
         { headers: { Authorization: 'Bearer ' + token.access_token } }
       );
       const tasksData = await tasksRes.json();
@@ -551,13 +551,17 @@ async function completeTask(who, listId, taskId, currentlyDone) {
   const newStatus = currentlyDone ? 'needsAction' : 'completed';
 
   try {
+    const body = newStatus === 'completed'
+      ? { status: 'completed', completed: new Date().toISOString() }
+      : { status: 'needsAction', completed: null };
+
     const res = await fetch(`${TASKS_API}/lists/${listId}/tasks/${taskId}`, {
       method: 'PATCH',
       headers: {
         Authorization: 'Bearer ' + token.access_token,
         'Content-Type': 'application/json'
       },
-      body: JSON.stringify({ status: newStatus, completed: newStatus === 'completed' ? new Date().toISOString() : null })
+      body: JSON.stringify(body)
     });
     if (!res.ok) throw new Error('patch failed ' + res.status);
     // refresh after short delay so API catches up
@@ -658,10 +662,11 @@ function handleCheck(el) {
   const taskId = item.dataset.task;
   const done   = item.dataset.done === 'true';
 
-  // optimistic UI
+  // optimistic UI — remove immediately if completing, restore if un-completing
   if (!done) {
-    el.classList.add('done');
-    item.querySelector('.task-title').classList.add('done');
+    item.style.transition = 'opacity .2s';
+    item.style.opacity = '0';
+    setTimeout(() => item.remove(), 200);
   } else {
     el.classList.remove('done');
     item.querySelector('.task-title').classList.remove('done');
