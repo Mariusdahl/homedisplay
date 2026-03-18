@@ -63,7 +63,7 @@ app.get('/auth/callback', async (req, res) => {
     const { tokens } = await oauth2Client.getToken(code);
     req.session.tokens = tokens;
     // Redirect back to the dashboard
-    res.redirect(process.env.FRONTEND_URL);
+    res.redirect(process.env.FRONTEND_URL + '/homedisplay');
   } catch (err) {
     console.error('Token exchange failed:', err);
     res.status(500).send('Authentication failed');
