@@ -24,8 +24,6 @@
       --pink-dim:   #7b3050;
       --offwhite:   #f0ebe3;
       --offwhite-2: #c9c3bb;
-      --green:      #4ade80;
-      --green-dim:  #166534;
       --radius:     16px;
       --font:       'Archivo', sans-serif;
       --page-pad:   32px;
@@ -40,7 +38,6 @@
       overflow: hidden;
     }
 
-    /* grain */
     body::before {
       content: '';
       position: fixed; inset: 0;
@@ -50,13 +47,11 @@
       z-index: 0;
     }
 
-    /* ── Layout ── */
     .dashboard {
       position: relative;
       z-index: 1;
       display: grid;
-      grid-template-columns: 380px 1fr 380px;
-      grid-template-rows: 100vh;
+      grid-template-columns: 1fr 420px;
       gap: var(--page-pad);
       padding: var(--page-pad);
       height: 100vh;
@@ -64,7 +59,6 @@
       overflow: hidden;
     }
 
-    /* ── Columns ── */
     .col {
       display: flex;
       flex-direction: column;
@@ -74,7 +68,6 @@
       overflow: hidden;
     }
 
-    /* ── Card ── */
     .card {
       background: var(--surface);
       border: 1px solid var(--border);
@@ -87,13 +80,9 @@
     }
     .card-fill { flex: 1; min-height: 0; }
 
-    .card-top {
-      height: 2px;
-      flex-shrink: 0;
-    }
+    .card-top { height: 2px; flex-shrink: 0; }
     .pink-top  { background: linear-gradient(90deg, var(--pink-dim), var(--pink-hi) 50%, transparent); }
-    .green-top { background: linear-gradient(90deg, var(--green-dim), var(--green) 50%, transparent); }
-    .white-top { background: linear-gradient(90deg, #333, #666 50%, transparent); }
+    .white-top { background: linear-gradient(90deg, #2a2a2a, #444 50%, transparent); }
 
     .card-header {
       display: flex;
@@ -112,147 +101,147 @@
       flex: 1;
     }
 
-    /* status dot */
     .dot {
       width: 7px; height: 7px;
       border-radius: 50%;
       flex-shrink: 0;
+      transition: background .3s, box-shadow .3s;
     }
-    .dot-pink  { background: var(--pink-hi);  box-shadow: 0 0 6px var(--pink-hi); }
-    .dot-green { background: var(--green);     box-shadow: 0 0 6px var(--green); }
-    .dot-muted { background: var(--border-lt); }
+    .dot-on  { background: var(--pink-hi); box-shadow: 0 0 6px var(--pink-hi); }
+    .dot-off { background: var(--border-lt); }
 
-    /* connect button */
-    .connect-btn {
+    .refresh-dot {
+      width: 5px; height: 5px;
+      border-radius: 50%;
+      background: #2a2a2a;
+      flex-shrink: 0;
+      transition: background .3s;
+    }
+    .refresh-dot.active { background: var(--pink-hi); }
+
+    .action-btn {
       background: transparent;
       border: 1px solid var(--border-lt);
       border-radius: 8px;
       color: var(--muted);
       font-family: var(--font);
-      font-size: .7rem;
+      font-size: .68rem;
       font-weight: 500;
       letter-spacing: .04em;
-      padding: 4px 11px;
+      padding: 4px 12px;
       cursor: pointer;
+      text-decoration: none;
+      display: inline-flex;
+      align-items: center;
       transition: color .15s, border-color .15s;
     }
-    .connect-btn:hover { color: var(--pink-hi); border-color: var(--pink-dim); }
-    .connect-btn.green:hover { color: var(--green); border-color: var(--green-dim); }
-    .connect-btn.disconnect { color: #555; font-size: .65rem; border-color: #222; }
-    .connect-btn.disconnect:hover { color: #f87171; border-color: #7f1d1d; }
+    .action-btn:hover           { color: var(--pink-hi); border-color: var(--pink-dim); }
+    .action-btn.danger:hover    { color: #f87171; border-color: #7f1d1d; }
 
     /* ── Task list ── */
     .task-body {
       flex: 1;
       overflow-y: auto;
-      padding: 10px 14px 14px;
+      padding: 8px 12px 12px;
       scrollbar-width: thin;
-      scrollbar-color: #222 transparent;
+      scrollbar-color: #1e1e1e transparent;
     }
-    .task-body::-webkit-scrollbar { width: 4px; }
-    .task-body::-webkit-scrollbar-thumb { background: #222; border-radius: 4px; }
+    .task-body::-webkit-scrollbar { width: 3px; }
+    .task-body::-webkit-scrollbar-thumb { background: #222; border-radius: 3px; }
 
-    .task-list-label {
-      font-size: .62rem;
+    .task-section-label {
+      font-size: .58rem;
       font-weight: 600;
-      letter-spacing: .1em;
+      letter-spacing: .12em;
       text-transform: uppercase;
-      color: #333;
-      padding: 8px 4px 5px;
+      color: #2e2e2e;
+      padding: 10px 4px 4px;
     }
 
     .task-item {
       display: flex;
       align-items: flex-start;
       gap: 10px;
-      padding: 8px 6px;
+      padding: 9px 6px;
       border-radius: 8px;
-      transition: background .15s;
-      cursor: default;
+      transition: background .15s, opacity .35s, transform .35s;
     }
     .task-item:hover { background: var(--surface-2); }
+    .task-item.completing { opacity: 0; transform: translateX(8px); }
 
     .task-check {
-      width: 16px; height: 16px;
+      width: 17px; height: 17px;
       border-radius: 50%;
-      border: 1.5px solid #333;
+      border: 1.5px solid #2e2e2e;
       flex-shrink: 0;
-      margin-top: 2px;
-      transition: border-color .15s, background .15s;
+      margin-top: 1px;
       cursor: pointer;
       position: relative;
+      transition: border-color .2s, background .2s;
     }
-    .task-check:hover { border-color: var(--pink-mid); }
-    .task-check.green-check:hover { border-color: var(--green); }
-    .task-check.done {
-      background: #222;
-      border-color: #333;
-    }
-    .task-check.done::after {
+    .task-check:hover         { border-color: var(--pink-mid); }
+    .task-check.striking      { background: #1a1a1a; border-color: #2a2a2a; }
+    .task-check.striking::after {
       content: '';
-      position: absolute;
-      top: 3px; left: 3px;
-      width: 8px; height: 8px;
+      position: absolute; inset: 3px;
       border-radius: 50%;
-      background: #444;
+      background: #333;
     }
 
     .task-info { flex: 1; min-width: 0; }
     .task-title {
-      font-size: .82rem;
+      font-size: .83rem;
       font-weight: 400;
       color: var(--text);
       line-height: 1.4;
       word-break: break-word;
+      transition: color .35s;
     }
-    .task-title.done { text-decoration: line-through; color: #444; }
+    .task-title.striking { text-decoration: line-through; color: #3a3a3a; }
 
-    .task-meta {
-      display: flex;
-      align-items: center;
-      gap: 6px;
-      margin-top: 3px;
-      flex-wrap: wrap;
-    }
-    .task-due {
-      font-size: .68rem;
-      color: var(--muted);
-    }
+    .task-meta { display: flex; align-items: center; gap: 6px; margin-top: 3px; }
+    .task-due         { font-size: .67rem; color: var(--muted); }
     .task-due.overdue { color: #f87171; }
     .task-due.today   { color: var(--pink-hi); }
 
-    /* star = significant */
-    .task-star {
-      font-size: .75rem;
-      line-height: 1;
-      color: #f59e0b;
-      flex-shrink: 0;
-      margin-top: 2px;
-    }
+    .task-star  { font-size: .75rem; color: #f59e0b; flex-shrink: 0; margin-top: 1px; }
+    .task-notes { font-size: .7rem; color: #484848; margin-top: 2px; line-height: 1.4; }
 
-    .task-notes {
-      font-size: .72rem;
-      color: #555;
-      margin-top: 2px;
-      line-height: 1.4;
-    }
-
-    /* empty / loading states */
     .state-msg {
-      padding: 24px 16px;
+      padding: 28px 16px;
       text-align: center;
       font-size: .78rem;
-      color: #333;
-      line-height: 1.7;
+      color: #2e2e2e;
+      line-height: 1.8;
     }
-    .state-msg .big { font-size: 1.6rem; display: block; margin-bottom: 8px; opacity: .3; }
+    .state-msg .big { font-size: 1.8rem; display: block; margin-bottom: 10px; opacity: .25; }
+    .state-msg a {
+      color: var(--pink-mid);
+      text-decoration: none;
+      border-bottom: 1px solid var(--pink-dim);
+    }
 
-    /* ── Calendar iframe ── */
-    .cal-wrap {
-      flex: 1;
-      position: relative;
-      min-height: 0;
+    /* ── Clock ── */
+    .datetime-body { padding: 18px 20px 16px; }
+    .dt-time {
+      font-size: 2.6rem;
+      font-weight: 300;
+      letter-spacing: -.02em;
+      color: var(--offwhite);
+      line-height: 1;
     }
+    .dt-time span { color: var(--pink-hi); }
+    .dt-date {
+      font-size: .72rem;
+      font-weight: 300;
+      color: var(--muted);
+      letter-spacing: .06em;
+      text-transform: uppercase;
+      margin-top: 5px;
+    }
+
+    /* ── Calendar ── */
+    .cal-wrap { flex: 1; position: relative; min-height: 0; }
     .cal-wrap iframe {
       position: absolute; inset: 0;
       width: 100%; height: 100%;
@@ -261,40 +250,16 @@
       filter: invert(1) hue-rotate(180deg) brightness(.88) saturate(1.2) contrast(1.05);
     }
 
-    /* ── Date/time card ── */
-    .datetime-body {
-      padding: 18px 18px 16px;
-      display: flex;
-      flex-direction: column;
-      gap: 2px;
-    }
-    .dt-time {
-      font-size: 2.8rem;
-      font-weight: 300;
-      letter-spacing: -.02em;
-      color: var(--offwhite);
-      line-height: 1;
-    }
-    .dt-time span { color: var(--pink-hi); }
-    .dt-date {
-      font-size: .78rem;
-      font-weight: 300;
-      color: var(--muted);
-      letter-spacing: .06em;
-      text-transform: uppercase;
-      margin-top: 4px;
-    }
-
-    /* ── Fullscreen btn ── */
+    /* ── Fullscreen ── */
     #fs-btn {
       position: fixed;
       bottom: 20px; right: 20px;
       z-index: 300;
-      width: 40px; height: 40px;
+      width: 38px; height: 38px;
       border-radius: 10px;
       background: rgba(17,17,17,.9);
       border: 1px solid #2a2a2a;
-      color: #555;
+      color: #444;
       cursor: pointer;
       display: flex;
       align-items: center;
@@ -303,52 +268,14 @@
       transition: color .15s, border-color .15s, box-shadow .15s;
     }
     #fs-btn:hover { color: var(--pink-hi); border-color: var(--pink-dim); box-shadow: 0 0 14px rgba(244,114,182,.2); }
-    #fs-btn svg { width: 14px; height: 14px; }
-
-    /* ── Refresh indicator ── */
-    .refresh-dot {
-      width: 5px; height: 5px;
-      border-radius: 50%;
-      background: #333;
-      flex-shrink: 0;
-      transition: background .3s;
-    }
-    .refresh-dot.active { background: var(--pink-hi); }
+    #fs-btn svg { width: 13px; height: 13px; }
   </style>
 </head>
 <body>
 
 <div class="dashboard">
 
-  <!-- ══ LEFT COL — Marius's tasks ══ -->
-  <div class="col">
-
-    <!-- Date/time -->
-    <div class="card">
-      <div class="card-top white-top"></div>
-      <div class="datetime-body">
-        <div class="dt-time" id="dt-time">00<span>:</span>00</div>
-        <div class="dt-date" id="dt-date">—</div>
-      </div>
-    </div>
-
-    <!-- Marius tasks -->
-    <div class="card card-fill">
-      <div class="card-top pink-top"></div>
-      <div class="card-header">
-        <div class="dot" id="dot-marius"></div>
-        <h2>Marius</h2>
-        <div class="refresh-dot" id="rdot-marius"></div>
-        <button class="connect-btn" id="btn-marius" onclick="connectAccount('marius')">Connect</button>
-      </div>
-      <div class="task-body" id="tasks-marius">
-        <div class="state-msg"><span class="big">👤</span>Connect your Google account<br>to see your tasks here.</div>
-      </div>
-    </div>
-
-  </div>
-
-  <!-- ══ CENTRE COL — Calendar ══ -->
+  <!-- ── Calendar ── -->
   <div class="col">
     <div class="card card-fill">
       <div class="card-top pink-top"></div>
@@ -361,373 +288,220 @@
     </div>
   </div>
 
-  <!-- ══ RIGHT COL — Wife's tasks ══ -->
+  <!-- ── Clock + Tasks ── -->
   <div class="col">
 
-    <!-- Wife tasks -->
-    <div class="card card-fill">
-      <div class="card-top green-top"></div>
-      <div class="card-header">
-        <div class="dot" id="dot-wife"></div>
-        <h2>Wife</h2>
-        <div class="refresh-dot" id="rdot-wife"></div>
-        <button class="connect-btn green" id="btn-wife" onclick="connectAccount('wife')">Connect</button>
-      </div>
-      <div class="task-body" id="tasks-wife">
-        <div class="state-msg"><span class="big">👤</span>Connect wife's Google account<br>to see her tasks here.</div>
+    <div class="card">
+      <div class="card-top white-top"></div>
+      <div class="datetime-body">
+        <div class="dt-time" id="dt-time">00<span>:</span>00</div>
+        <div class="dt-date" id="dt-date">—</div>
       </div>
     </div>
 
-    <!-- Quick legend -->
-    <div class="card">
-      <div class="card-top white-top"></div>
-      <div style="padding:14px 18px;display:flex;flex-direction:column;gap:8px;">
-        <div style="font-size:.62rem;font-weight:600;letter-spacing:.1em;text-transform:uppercase;color:#333;margin-bottom:2px;">Legend</div>
-        <div style="display:flex;align-items:center;gap:8px;font-size:.74rem;color:var(--muted);">
-          <span style="color:#f59e0b;font-size:.85rem;">★</span> Starred / significant task
-        </div>
-        <div style="display:flex;align-items:center;gap:8px;font-size:.74rem;color:var(--muted);">
-          <span style="color:#f87171;font-size:.74rem;font-weight:600;">!</span> Overdue
-        </div>
-        <div style="display:flex;align-items:center;gap:8px;font-size:.74rem;color:var(--muted);">
-          <span style="color:var(--pink-hi);font-size:.74rem;font-weight:600;">•</span> Due today
+    <div class="card card-fill">
+      <div class="card-top pink-top"></div>
+      <div class="card-header">
+        <h2>Family Tasks</h2>
+        <div class="dot dot-off" id="status-dot"></div>
+        <div class="refresh-dot" id="refresh-dot"></div>
+        <button class="action-btn danger" id="logout-btn" onclick="logout()" style="display:none">Disconnect</button>
+      </div>
+      <div class="task-body" id="task-body">
+        <div class="state-msg">
+          <span class="big">📋</span>
+          <a href="#" onclick="login()">Sign in with Google</a><br>
+          to load your family tasks.
         </div>
       </div>
     </div>
 
   </div>
+</div>
 
-</div><!-- /dashboard -->
-
-<!-- Fullscreen button -->
 <button id="fs-btn" onclick="toggleFullscreen()" title="Toggle fullscreen">
   <svg id="fs-enter" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="15 3 21 3 21 9"/><polyline points="9 21 3 21 3 15"/><line x1="21" y1="3" x2="14" y2="10"/><line x1="3" y1="21" x2="10" y2="14"/></svg>
   <svg id="fs-exit"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" style="display:none"><polyline points="4 14 10 14 10 20"/><polyline points="20 10 14 10 14 4"/><line x1="10" y1="14" x2="3" y2="21"/><line x1="21" y1="3" x2="14" y2="10"/></svg>
 </button>
 
-<!-- Google Identity Services -->
-<script src="https://accounts.google.com/gsi/client" async defer></script>
-
 <script>
-const CLIENT_ID = '228569317020-k21ano70j6psekmih6h6bt44thibuf9t.apps.googleusercontent.com';
-const SCOPES    = 'https://www.googleapis.com/auth/tasks';
-const TASKS_API = 'https://tasks.googleapis.com/tasks/v1';
+  // ── Point this at your Render backend URL once deployed ──
+  const API = 'https://homedisplay.onrender.com';
 
-// tokens stored per account key
-const state = {
-  marius: { token: null, name: 'Marius' },
-  wife:   { token: null, name: 'Wife'   }
-};
+  // ── Auth ──────────────────────────────────────────────────
+  function login()  { window.location.href = API + '/auth/login'; }
+  function logout() {
+    if (!confirm('Disconnect the shared account?')) return;
+    fetch(API + '/auth/logout', { method: 'POST', credentials: 'include' })
+      .then(() => { setConnected(false); renderTasks(null); });
+  }
 
-/* ── Load saved tokens ── */
-function loadTokens() {
-  ['marius','wife'].forEach(who => {
-    const saved = localStorage.getItem('token_' + who);
-    if (saved) {
-      try {
-        state[who].token = JSON.parse(saved);
-      } catch(e) {}
-    }
-  });
-}
-
-function saveToken(who, token) {
-  state[who].token = token;
-  localStorage.setItem('token_' + who, JSON.stringify(token));
-}
-
-function clearToken(who) {
-  state[who].token = null;
-  localStorage.removeItem('token_' + who);
-}
-
-/* ── OAuth via Google Identity Services ── */
-let tokenClients = {};
-
-function initTokenClients() {
-  ['marius','wife'].forEach(who => {
-    tokenClients[who] = google.accounts.oauth2.initTokenClient({
-      client_id: CLIENT_ID,
-      scope: SCOPES,
-      callback: (response) => {
-        if (response.error) {
-          console.error('Auth error for', who, response.error);
-          return;
-        }
-        const token = {
-          access_token: response.access_token,
-          expires_at: Date.now() + (response.expires_in * 1000)
-        };
-        saveToken(who, token);
-        updateUI(who, true);
-        fetchTasks(who);
+  async function checkAuth() {
+    try {
+      const res  = await fetch(API + '/auth/status', { credentials: 'include' });
+      const data = await res.json();
+      if (data.authenticated) {
+        setConnected(true);
+        fetchTasks();
       }
-    });
-  });
-}
-
-function connectAccount(who) {
-  if (state[who].token) {
-    // disconnect
-    if (confirm('Disconnect ' + state[who].name + '\'s account?')) {
-      clearToken(who);
-      updateUI(who, false);
-      document.getElementById('tasks-' + who).innerHTML =
-        `<div class="state-msg"><span class="big">👤</span>Connect ${state[who].name}'s Google account<br>to see tasks here.</div>`;
+    } catch(e) {
+      console.error('Auth check failed', e);
     }
-    return;
-  }
-  // prompt=select_account forces account picker so each person can choose their own account
-  tokenClients[who].requestAccessToken({ prompt: 'select_account' });
-}
-
-function updateUI(who, connected) {
-  const dot = document.getElementById('dot-' + who);
-  const btn = document.getElementById('btn-' + who);
-  if (connected) {
-    dot.className = 'dot ' + (who === 'marius' ? 'dot-pink' : 'dot-green');
-    btn.textContent = 'Disconnect';
-    btn.classList.add('disconnect');
-    btn.classList.remove('green');
-  } else {
-    dot.className = 'dot dot-muted';
-    btn.textContent = 'Connect';
-    btn.classList.remove('disconnect');
-    if (who === 'wife') btn.classList.add('green');
-  }
-}
-
-/* ── Fetch tasks ── */
-async function fetchTasks(who) {
-  const token = state[who].token;
-  if (!token) return;
-
-  // check expiry
-  if (Date.now() > token.expires_at - 60000) {
-    clearToken(who);
-    updateUI(who, false);
-    document.getElementById('tasks-' + who).innerHTML =
-      `<div class="state-msg"><span class="big">🔄</span>Session expired.<br>Please reconnect.</div>`;
-    return;
   }
 
-  // flash refresh dot
-  const rdot = document.getElementById('rdot-' + who);
-  rdot.classList.add('active');
-  setTimeout(() => rdot.classList.remove('active'), 800);
-
-  try {
-    // 1. get all task lists
-    const listsRes = await fetch(`${TASKS_API}/users/@me/lists?maxResults=20`, {
-      headers: { Authorization: 'Bearer ' + token.access_token }
-    });
-    if (!listsRes.ok) throw new Error('lists fetch failed: ' + listsRes.status);
-    const listsData = await listsRes.json();
-    const lists = listsData.items || [];
-
-    // 2. fetch tasks for each list in parallel
-    const allLists = await Promise.all(lists.map(async list => {
-      const tasksRes = await fetch(
-        `${TASKS_API}/lists/${list.id}/tasks?maxResults=100&showCompleted=false&showHidden=false`,
-        { headers: { Authorization: 'Bearer ' + token.access_token } }
-      );
-      const tasksData = await tasksRes.json();
-      return { list, tasks: tasksData.items || [] };
-    }));
-
-    renderTasks(who, allLists);
-  } catch(e) {
-    console.error('fetchTasks error', who, e);
-    document.getElementById('tasks-' + who).innerHTML =
-      `<div class="state-msg"><span class="big">⚠️</span>Couldn't load tasks.<br><small style="color:#555">${e.message}</small></div>`;
+  function setConnected(yes) {
+    document.getElementById('status-dot').className = 'dot ' + (yes ? 'dot-on' : 'dot-off');
+    document.getElementById('logout-btn').style.display = yes ? '' : 'none';
   }
-}
 
-/* ── Complete a task ── */
-async function completeTask(who, listId, taskId, currentlyDone) {
-  const token = state[who].token;
-  if (!token) return;
+  // ── Fetch tasks ───────────────────────────────────────────
+  async function fetchTasks() {
+    const rdot = document.getElementById('refresh-dot');
+    rdot.classList.add('active');
+    setTimeout(() => rdot.classList.remove('active'), 700);
 
-  const newStatus = currentlyDone ? 'needsAction' : 'completed';
-
-  try {
-    const body = newStatus === 'completed'
-      ? { status: 'completed', completed: new Date().toISOString() }
-      : { status: 'needsAction', completed: null };
-
-    const res = await fetch(`${TASKS_API}/lists/${listId}/tasks/${taskId}`, {
-      method: 'PATCH',
-      headers: {
-        Authorization: 'Bearer ' + token.access_token,
-        'Content-Type': 'application/json'
-      },
-      body: JSON.stringify(body)
-    });
-    if (!res.ok) throw new Error('patch failed ' + res.status);
-    // refresh after short delay so API catches up
-    setTimeout(() => fetchTasks(who), 600);
-  } catch(e) {
-    console.error('completeTask error', e);
+    try {
+      const res = await fetch(API + '/tasks', { credentials: 'include' });
+      if (res.status === 401) { setConnected(false); renderTasks(null); return; }
+      const data = await res.json();
+      renderTasks(data.tasks);
+    } catch(e) {
+      console.error('fetchTasks', e);
+    }
   }
-}
 
-/* ── Render tasks ── */
-function renderTasks(who, allLists) {
-  const container = document.getElementById('tasks-' + who);
-  const isGreen   = who === 'wife';
-  const today     = new Date(); today.setHours(0,0,0,0);
+  // ── Render ────────────────────────────────────────────────
+  function renderTasks(tasks) {
+    const container = document.getElementById('task-body');
+    const today = new Date(); today.setHours(0,0,0,0);
 
-  let html = '';
-  let totalVisible = 0;
+    if (!tasks) {
+      container.innerHTML = `<div class="state-msg"><span class="big">📋</span><a href="#" onclick="login()">Sign in with Google</a><br>to load your family tasks.</div>`;
+      return;
+    }
+    if (!tasks.length) {
+      container.innerHTML = `<div class="state-msg"><span class="big">🎉</span>All done!<br>No tasks remaining.</div>`;
+      return;
+    }
 
-  allLists.forEach(({ list, tasks }) => {
-    // filter: show incomplete + completed tasks (completed shown greyed)
-    const visible = tasks.filter(t => t.title && t.title.trim());
-    if (!visible.length) return;
-    totalVisible += visible.length;
-
-    html += `<div class="task-list-label">${escHtml(list.title)}</div>`;
-
-    // sort: incomplete first, then by due date, then starred
-    const sorted = visible.slice().sort((a, b) => {
-      if (a.status === 'completed' && b.status !== 'completed') return 1;
-      if (a.status !== 'completed' && b.status === 'completed') return -1;
-      // starred (notes field trick — Google Tasks uses 'starred' in some clients)
-      const aStarred = a.title.startsWith('★') || a.title.startsWith('*');
-      const bStarred = b.title.startsWith('★') || b.title.startsWith('*');
-      if (aStarred && !bStarred) return -1;
-      if (!aStarred && bStarred) return 1;
+    // sort: starred → due date → undated
+    tasks.sort((a, b) => {
+      const aS = a.title.startsWith('★') || a.title.startsWith('*');
+      const bS = b.title.startsWith('★') || b.title.startsWith('*');
+      if (aS && !bS) return -1;
+      if (!aS && bS) return 1;
       if (a.due && b.due) return new Date(a.due) - new Date(b.due);
       if (a.due) return -1;
       if (b.due) return 1;
       return 0;
     });
 
-    sorted.forEach(task => {
-      const done     = task.status === 'completed';
-      const starred  = task.title.startsWith('★') || task.title.startsWith('*');
-      const title    = task.title.replace(/^[★\*]\s*/, '');
+    const starred = tasks.filter(t => t.title.startsWith('★') || t.title.startsWith('*'));
+    const normal  = tasks.filter(t => !t.title.startsWith('★') && !t.title.startsWith('*'));
+
+    const buildTask = task => {
+      const title   = task.title.replace(/^[★\*]\s*/, '');
+      const starred = task.title.startsWith('★') || task.title.startsWith('*');
 
       let dueHtml = '';
-      let overdueClass = '';
       if (task.due) {
         const dueDate = new Date(task.due); dueDate.setHours(0,0,0,0);
-        const diff    = Math.round((dueDate - today) / 86400000);
-        let dueLabel  = '';
-        let dueClass  = 'task-due';
-        if (diff < 0)      { dueLabel = `${Math.abs(diff)}d overdue`; dueClass += ' overdue'; overdueClass = 'overdue'; }
-        else if (diff === 0) { dueLabel = 'Today';   dueClass += ' today'; }
-        else if (diff === 1) { dueLabel = 'Tomorrow'; }
-        else                 { dueLabel = dueDate.toLocaleDateString('en-GB', { day:'numeric', month:'short' }); }
-        if (!done) dueHtml = `<span class="${dueClass}">${dueLabel}</span>`;
+        const diff = Math.round((dueDate - today) / 86400000);
+        let label = '', cls = 'task-due';
+        if      (diff < 0)   { label = `${Math.abs(diff)}d overdue`; cls += ' overdue'; }
+        else if (diff === 0) { label = 'Today';    cls += ' today'; }
+        else if (diff === 1) { label = 'Tomorrow'; }
+        else                 { label = dueDate.toLocaleDateString('en-GB', { day:'numeric', month:'short' }); }
+        dueHtml = `<span class="${cls}">${label}</span>`;
       }
 
-      const checkClass = `task-check${done ? ' done' : ''}${isGreen ? ' green-check' : ''}`;
-      const titleClass = `task-title${done ? ' done' : ''}`;
-
-      html += `
-        <div class="task-item" data-list="${escHtml(list.id)}" data-task="${escHtml(task.id)}" data-done="${done}" data-who="${who}">
-          <div class="${checkClass}" onclick="handleCheck(this)"></div>
+      return `
+        <div class="task-item" data-list="${escHtml(task.listId)}" data-task="${escHtml(task.id)}">
+          <div class="task-check" onclick="handleCheck(this)"></div>
           <div class="task-info">
-            <div class="${titleClass}">${escHtml(title)}</div>
-            ${dueHtml || task.notes ? `
-            <div class="task-meta">
-              ${dueHtml}
-            </div>` : ''}
-            ${task.notes && !done ? `<div class="task-notes">${escHtml(task.notes.substring(0,80))}${task.notes.length>80?'…':''}</div>` : ''}
+            <div class="task-title">${escHtml(title)}</div>
+            ${dueHtml ? `<div class="task-meta">${dueHtml}</div>` : ''}
+            ${task.notes ? `<div class="task-notes">${escHtml(task.notes.substring(0,100))}${task.notes.length>100?'…':''}</div>` : ''}
           </div>
-          ${starred && !done ? `<div class="task-star">★</div>` : ''}
-          ${overdueClass && !done ? `<div style="font-size:.7rem;font-weight:700;color:#f87171;flex-shrink:0;margin-top:2px;">!</div>` : ''}
+          ${starred ? `<div class="task-star">★</div>` : ''}
         </div>`;
-    });
-  });
+    };
 
-  if (!totalVisible) {
-    html = `<div class="state-msg"><span class="big">✓</span>All clear!<br>No tasks found.</div>`;
-  }
-
-  container.innerHTML = html;
-}
-
-function escHtml(s) {
-  return String(s)
-    .replace(/&/g,'&amp;').replace(/</g,'&lt;')
-    .replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-function handleCheck(el) {
-  const item   = el.closest('.task-item');
-  const who    = item.dataset.who;
-  const listId = item.dataset.list;
-  const taskId = item.dataset.task;
-  const done   = item.dataset.done === 'true';
-
-  // optimistic UI — remove immediately if completing, restore if un-completing
-  if (!done) {
-    item.style.transition = 'opacity .2s';
-    item.style.opacity = '0';
-    setTimeout(() => item.remove(), 200);
-  } else {
-    el.classList.remove('done');
-    item.querySelector('.task-title').classList.remove('done');
-  }
-
-  completeTask(who, listId, taskId, done);
-}
-
-/* ── Auto-refresh every 3 minutes ── */
-function refreshAll() {
-  ['marius','wife'].forEach(who => {
-    if (state[who].token) fetchTasks(who);
-  });
-}
-
-/* ── Clock ── */
-function updateClock() {
-  const now  = new Date();
-  const hh   = String(now.getHours()).padStart(2,'0');
-  const mm   = String(now.getMinutes()).padStart(2,'0');
-  const colon = now.getSeconds() % 2 === 0 ? '<span>:</span>' : '<span style="opacity:.3">:</span>';
-  document.getElementById('dt-time').innerHTML = hh + colon + mm;
-  document.getElementById('dt-date').textContent = now.toLocaleDateString('en-GB', {
-    weekday: 'long', day: 'numeric', month: 'long', year: 'numeric'
-  });
-}
-
-/* ── Fullscreen ── */
-function toggleFullscreen() {
-  if (!document.fullscreenElement) document.documentElement.requestFullscreen();
-  else document.exitFullscreen();
-}
-document.addEventListener('fullscreenchange', () => {
-  const fs = !!document.fullscreenElement;
-  document.getElementById('fs-enter').style.display = fs ? 'none' : '';
-  document.getElementById('fs-exit').style.display  = fs ? ''     : 'none';
-});
-
-/* ── Boot ── */
-window.addEventListener('load', () => {
-  loadTokens();
-
-  // init Google client once library loads
-  const waitForGoogle = setInterval(() => {
-    if (window.google && google.accounts) {
-      clearInterval(waitForGoogle);
-      initTokenClients();
-      // auto-load tasks if tokens already saved
-      ['marius','wife'].forEach(who => {
-        if (state[who].token) {
-          updateUI(who, true);
-          fetchTasks(who);
-        }
-      });
+    let html = '';
+    if (starred.length) {
+      html += `<div class="task-section-label">Starred</div>`;
+      starred.forEach(t => html += buildTask(t));
     }
-  }, 200);
+    if (normal.length) {
+      if (starred.length) html += `<div class="task-section-label">Tasks</div>`;
+      normal.forEach(t => html += buildTask(t));
+    }
 
+    container.innerHTML = html;
+  }
+
+  // ── Complete ──────────────────────────────────────────────
+  async function completeTask(listId, taskId) {
+    try {
+      const res = await fetch(`${API}/tasks/${listId}/${taskId}/complete`, {
+        method: 'PATCH',
+        credentials: 'include'
+      });
+      if (!res.ok) throw new Error('complete failed');
+      setTimeout(fetchTasks, 800);
+    } catch(e) {
+      console.error('completeTask', e);
+    }
+  }
+
+  function handleCheck(el) {
+    const item   = el.closest('.task-item');
+    const listId = item.dataset.list;
+    const taskId = item.dataset.task;
+
+    el.classList.add('striking');
+    item.querySelector('.task-title').classList.add('striking');
+    setTimeout(() => {
+      item.classList.add('completing');
+      setTimeout(() => item.remove(), 380);
+    }, 600);
+
+    completeTask(listId, taskId);
+  }
+
+  // ── Helpers ───────────────────────────────────────────────
+  function escHtml(s) {
+    return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+  }
+
+  // ── Clock ─────────────────────────────────────────────────
+  function updateClock() {
+    const now = new Date();
+    const hh  = String(now.getHours()).padStart(2,'0');
+    const mm  = String(now.getMinutes()).padStart(2,'0');
+    const col = now.getSeconds() % 2 === 0 ? '<span>:</span>' : '<span style="opacity:.25">:</span>';
+    document.getElementById('dt-time').innerHTML = hh + col + mm;
+    document.getElementById('dt-date').textContent = now.toLocaleDateString('en-GB', {
+      weekday:'long', day:'numeric', month:'long', year:'numeric'
+    });
+  }
+
+  // ── Fullscreen ────────────────────────────────────────────
+  function toggleFullscreen() {
+    if (!document.fullscreenElement) document.documentElement.requestFullscreen();
+    else document.exitFullscreen();
+  }
+  document.addEventListener('fullscreenchange', () => {
+    const fs = !!document.fullscreenElement;
+    document.getElementById('fs-enter').style.display = fs ? 'none' : '';
+    document.getElementById('fs-exit').style.display  = fs ? ''     : 'none';
+  });
+
+  // ── Boot ──────────────────────────────────────────────────
   updateClock();
   setInterval(updateClock, 1000);
-  setInterval(refreshAll, 30 * 1000);
-});
+  checkAuth();
+  setInterval(fetchTasks, 30 * 1000);
 </script>
 
 </body>
