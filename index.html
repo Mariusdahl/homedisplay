@@ -328,21 +328,56 @@
   // ── Point this at your Render backend URL once deployed ──
   const API = 'https://homedisplay.onrender.com';
 
+  // ── Token storage ─────────────────────────────────────────
+  let sessionToken = localStorage.getItem('hd_token') || null;
+
+  function authHeaders() {
+    return sessionToken
+      ? { 'Authorization': 'Bearer ' + sessionToken }
+      : {};
+  }
+
+  // On load — check if Google redirected back with a token in the hash
+  (function grabTokenFromHash() {
+    const hash = window.location.hash;
+    if (hash.includes('token=')) {
+      const token = hash.split('token=')[1].split('&')[0];
+      if (token) {
+        sessionToken = token;
+        localStorage.setItem('hd_token', token);
+        // Clean the token out of the URL
+        history.replaceState(null, '', window.location.pathname);
+      }
+    }
+  })();
+
   // ── Auth ──────────────────────────────────────────────────
   function login()  { window.location.href = API + '/auth/login'; }
   function logout() {
     if (!confirm('Disconnect the shared account?')) return;
-    fetch(API + '/auth/logout', { method: 'POST', credentials: 'include' })
-      .then(() => { setConnected(false); renderTasks(null); });
+    fetch(API + '/auth/logout', {
+      method: 'POST',
+      headers: authHeaders()
+    }).finally(() => {
+      sessionToken = null;
+      localStorage.removeItem('hd_token');
+      setConnected(false);
+      renderTasks(null);
+    });
   }
 
   async function checkAuth() {
+    if (!sessionToken) return;
     try {
-      const res  = await fetch(API + '/auth/status', { credentials: 'include' });
+      const res  = await fetch(API + '/auth/status', { headers: authHeaders() });
       const data = await res.json();
       if (data.authenticated) {
         setConnected(true);
         fetchTasks();
+      } else {
+        sessionToken = null;
+        localStorage.removeItem('hd_token');
+        setConnected(false);
       }
     } catch(e) {
       console.error('Auth check failed', e);
@@ -356,12 +391,13 @@
 
   // ── Fetch tasks ───────────────────────────────────────────
   async function fetchTasks() {
+    if (!sessionToken) return;
     const rdot = document.getElementById('refresh-dot');
     rdot.classList.add('active');
     setTimeout(() => rdot.classList.remove('active'), 700);
 
     try {
-      const res = await fetch(API + '/tasks', { credentials: 'include' });
+      const res = await fetch(API + '/tasks', { headers: authHeaders() });
       if (res.status === 401) { setConnected(false); renderTasks(null); return; }
       const data = await res.json();
       renderTasks(data.tasks);
@@ -445,7 +481,7 @@
     try {
       const res = await fetch(`${API}/tasks/${listId}/${taskId}/complete`, {
         method: 'PATCH',
-        credentials: 'include'
+        headers: authHeaders()
       });
       if (!res.ok) throw new Error('complete failed');
       setTimeout(fetchTasks, 800);
